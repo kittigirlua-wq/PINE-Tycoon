@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="uk">
+  <head>
+    <meta charset="UTF-8" />
+    <title>PINE Tycoon</title>
+
+    <!-- Щоб сайт добре виглядав на телефоні -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <style>
+      /* Плавна прокрутка до #blog */
+      html {
+        scroll-behavior: smooth;
+      }
+
+      /* Щоб footer завжди був внизу */
+      html, body {
+        height: 100%;
+        margin: 0;
+      }
+
+      body {
+        display: flex;
+        flex-direction: column;
+        font-family: Arial, sans-serif;
+        background-color: #f4f4f4;
+      }
+
+      header {
+        padding: 10px 20px;
+      }
+
+      nav a {
+        margin-right: 15px;
+        text-decoration: none;
+        color: #000;
+      }
+
+      main {
+        flex: 1;              /* розтягується і штовхає footer вниз */
+        padding: 20px;
+      }
+
+      /* Лого/картинка по центру */
+      .main-logo {
+        display: block;
+        margin: 0 auto 20px;  /* по центру + відступ знизу */
+        max-width: 55%;
+      }
+
+      /* Заголовок блогу */
+      h1 {
+        margin-top: 40px;
+      }
+
+      /* Прямокутний footer знизу */
+      footer {
+        background-color: #383837;
+        color: white;
+        padding: 15px 20px;
+        text-align: center;
+      }
+    </style>
+  </head>
+
+  <body>
+    <header>
+      <nav>
+        <!-- Краще так, якщо файл лежить поруч: -->
+        <a href="village_pixel_minimap_axe.html" class="about">Грати!</a>
+
+        <!-- Лінк до блогу на цій же сторінці -->
+        <a href="#blog" class="blog">Блог</a>
+      </nav>
+    </header>
+
+    <main>
+      <!-- Картинка по центру -->
+      <img 
+        src="https://learn.logikaschool.com/uploads/student/4796102/6929d42d4c366.png" 
+        alt="PINE Tycoon" 
+        class="main-logo"
+      />
+
+      <p class="inf"></p>
+      <p>
+        Ласкаво просимо до затишного місця "PINE Tycoon". У цій грі вам потрібно
+        рубати дрова та будувати своє власне затишне село!
+      </p>
+      <p>
+        Ця версія гри не фінальна, тому може бути багато багів і гра може змінитися з часом.
+      </p>
+
+      <h1 id="blog">
+        БЛОГ
+      </h1>
+      <p>
+        Поки що тут пусто...
+      </p>
+    </main>
+
+    <footer>
+      © 2025 PINE Tycoon — бета-версія гри
+    </footer>
+  </body>
+</html>
