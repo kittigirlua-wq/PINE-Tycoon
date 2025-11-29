@@ -1,131 +1,304 @@
-<script>
-  (function () {
-    const DEFAULT_AVATAR = "https://learn.logikaschool.com/uploads/student/4796102/692acc8996fdc.png";
-    const DAVYD_AVATAR = "https://learn.logikaschool.com/uploads/student/4796102/692acfc896c23.png";
+/* Плавна прокрутка до блогу */
+html {
+  scroll-behavior: smooth;
+}
 
-    function getUsers() {
-      const raw = localStorage.getItem("pineUsers");
-      if (!raw) return {};
-      try {
-        const obj = JSON.parse(raw);
-        return obj && typeof obj === "object" ? obj : {};
-      } catch (e) {
-        return {};
-      }
-    }
+/* Щоб footer був внизу */
+html,
+body {
+  height: 100%;
+  margin: 0;
+}
 
-    function getComments() {
-      const raw = localStorage.getItem("pineBlogComments");
-      if (!raw) return [];
-      try {
-        const arr = JSON.parse(raw);
-        return Array.isArray(arr) ? arr : [];
-      } catch (e) {
-        return [];
-      }
-    }
+/* Загальні стилі */
+body {
+  display: flex;
+  flex-direction: column;
+  font-family: sans-serif;
+  background-color: #f4f4f4;
+}
 
-    function saveComments(comments) {
-      localStorage.setItem("pineBlogComments", JSON.stringify(comments));
-    }
+/* Шапка */
+header {
+  height: 60px;
+}
 
-    const nameDisplay = document.getElementById("userNameDisplay");
-    const welcomeText = document.getElementById("welcomeText");
-    const avatarImg = document.querySelector(".user-avatar");
+/* Кнопки Sign in / Sign up у правому верхньому куті */
+.auth-buttons {
+  position: fixed;
+  top: 10px;
+  right: 20px;
+  display: flex;
+  gap: 8px;
+  z-index: 1000;
+}
 
-    const currentName = localStorage.getItem("pineUserName");
-    const users = getUsers();
+.auth-buttons a {
+  display: inline-block;
+  padding: 8px 14px;
+  font-size: 14px;
+  text-decoration: none;
+  border-radius: 5px;
+  background-color: rgb(56, 56, 55);
+  color: #ffffff;
+}
 
-    let nameToShow = "Guest";
-    if (currentName && users[currentName]) {
-      nameToShow = currentName;
-    }
+.auth-buttons a.signup {
+  background-color: transparent;
+  color: rgb(56, 56, 55);
+  border: 1px solid rgb(56, 56, 55);
+}
 
-    if (nameToShow === "Guest") {
-      nameDisplay.textContent = "Гість";
-      welcomeText.textContent = "Welcome Guest";
-    } else {
-      nameDisplay.textContent = nameToShow;
-      welcomeText.textContent = "Welcome " + nameToShow;
-    }
+.auth-buttons a:hover {
+  opacity: 0.9;
+}
 
-    if (nameToShow === "davyd3102") {
-      avatarImg.src = DAVYD_AVATAR;
-    } else {
-      avatarImg.src = DEFAULT_AVATAR;
-    }
+/* Бокове меню з анімацією зліва */
+.side-nav a {
+  position: fixed;
+  left: -120px;
+  transition: left 0.3s;
+  width: 140px;
+  padding: 15px;
+  text-decoration: none;
+  font-size: 20px;
+  color: white;
+  border-radius: 0 5px 5px 0;
+  background-color: rgb(56, 56, 55);
+  z-index: 500;
+}
 
-    // ----- Коментарі -----
-    const commentsListEl = document.getElementById("commentsList");
-    const noCommentsText = document.getElementById("noCommentsText");
-    const commentFormWrapper = document.getElementById("commentFormWrapper");
+.side-nav a:hover {
+  left: 0;
+}
 
-    function renderComments() {
-      const comments = getComments();
-      commentsListEl.innerHTML = "";
-      if (!comments.length) {
-        noCommentsText.style.display = "block";
-        return;
-      }
-      noCommentsText.style.display = "none";
+.side-nav .about {
+  top: 120px;
+}
 
-      comments.forEach((c) => {
-        const li = document.createElement("li");
-        li.className = "comment-item";
+.side-nav .blog {
+  top: 180px;
+}
 
-        const authorDiv = document.createElement("div");
-        authorDiv.className = "comment-author";
-        authorDiv.textContent = c.author;
+/* Основний контейнер */
+main {
+  flex: 1;
+  padding: 20px;
+}
 
-        const textDiv = document.createElement("div");
-        textDiv.className = "comment-text";
-        textDiv.textContent = c.text;
+/* Відступ під бокове меню */
+body.has-sidebar main {
+  margin-left: 180px;
+}
 
-        li.appendChild(authorDiv);
-        li.appendChild(textDiv);
+/* Привітання Welcome ... */
+.welcome-text {
+  font-size: 20px;
+  margin-bottom: 10px;
+  color: rgb(56, 56, 55);
+  font-weight: 600;
+}
 
-        commentsListEl.appendChild(li);
-      });
-    }
+/* Заголовок блогу */
+h1 {
+  font-size: 40px;
+  color: rgb(56, 56, 55);
+  font-family: "Gill Sans", "Gill Sans MT", Calibri, "Trebuchet MS", sans-serif;
+  margin-top: 40px;
+}
 
-    renderComments();
+/* Інфо-текст */
+.inf {
+  font-size: 20px;
+  font-weight: 700;
+  color: #481677;
+}
 
-    // Форма коментарів тільки для davyd3102
-    if (nameToShow === "davyd3102") {
-      commentFormWrapper.innerHTML = `
-        <form id="commentForm" class="comment-form">
-          <label>
-            Ваш коментар:
-            <textarea id="commentText" required></textarea>
-          </label>
-          <button type="submit">Надіслати</button>
-        </form>
-      `;
+/* Текст абзаців */
+p {
+  width: 70%;
+}
 
-      const commentForm = document.getElementById("commentForm");
-      const commentTextEl = document.getElementById("commentText");
+/* Лого/картинка по центру */
+.main-logo {
+  display: block;
+  margin: 20px auto;
+  max-width: 55%;
+  border-radius: 20px;
+  border: 0px solid rgb(130, 213, 136);
+  transition: 0.3s;
+}
 
-      commentForm.addEventListener("submit", function (e) {
-        e.preventDefault();
-        const text = commentTextEl.value.trim();
-        if (!text) return;
+.main-logo:hover {
+  opacity: 1;
+  border: 10px solid rgb(56, 56, 55);
+  padding: 10px;
+}
 
-        const comments = getComments();
-        comments.push({
-          author: nameToShow,
-          text: text,
-          time: Date.now(),
-        });
-        saveComments(comments);
-        commentTextEl.value = "";
-        renderComments();
-      });
-    } else {
-      commentFormWrapper.innerHTML = `
-        <p class="comment-info">
-          Щоб залишати коментарі, потрібно зайти як <strong>davyd3102</strong>.
-        </p>
-      `;
-    }
-  })();
-</script>
+/* Блок акаунта */
+.user-panel {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+.user-avatar {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.user-name-label {
+  font-size: 14px;
+  color: #555;
+}
+
+.user-name-value {
+  font-size: 18px;
+  font-weight: 700;
+  color: rgb(56, 56, 55);
+}
+
+/* Футер */
+footer {
+  background-color: rgb(56, 56, 55);
+  text-align: center;
+  color: aliceblue;
+  padding: 15px 20px;
+}
+
+/* Сторінки логіну / реєстрації */
+.auth-page-main {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.auth-card {
+  background-color: #ffffff;
+  padding: 24px 28px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  width: 320px;
+}
+
+.auth-card h1 {
+  margin-top: 0;
+  margin-bottom: 10px;
+  color: rgb(56, 56, 55);
+}
+
+.auth-card p {
+  width: 100%;
+  margin-bottom: 16px;
+}
+
+.auth-card label {
+  display: block;
+  font-size: 14px;
+  margin-bottom: 8px;
+}
+
+.auth-card input {
+  width: 100%;
+  padding: 8px 10px;
+  font-size: 14px;
+  margin-top: 4px;
+  box-sizing: border-box;
+}
+
+.auth-card button {
+  width: 100%;
+  padding: 8px 12px;
+  margin-top: 12px;
+  background-color: rgb(56, 56, 55);
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.auth-card button:hover {
+  opacity: 0.9;
+}
+
+.auth-note {
+  font-size: 14px;
+  margin-top: 12px;
+}
+
+.auth-note a {
+  color: rgb(56, 56, 55);
+  text-decoration: none;
+}
+
+.auth-note a:hover {
+  text-decoration: underline;
+}
+
+/* Коментарі блогу */
+.comments-section {
+  margin-top: 20px;
+  max-width: 700px;
+}
+
+.comments-section h2 {
+  margin-bottom: 10px;
+  font-size: 24px;
+  color: rgb(56, 56, 55);
+}
+
+.comments-list {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 15px 0;
+}
+
+.comment-item {
+  padding: 8px 10px;
+  margin-bottom: 8px;
+  background: #ffffff;
+  border-radius: 6px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+.comment-author {
+  font-weight: 600;
+  margin-bottom: 4px;
+  color: rgb(56, 56, 55);
+}
+
+.comment-text {
+  font-size: 14px;
+}
+
+.comment-form textarea {
+  width: 100%;
+  min-height: 60px;
+  padding: 6px 8px;
+  box-sizing: border-box;
+  resize: vertical;
+}
+
+.comment-form button {
+  margin-top: 8px;
+  padding: 6px 12px;
+  background-color: rgb(56, 56, 55);
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.comment-form button:hover {
+  opacity: 0.9;
+}
+
+.comment-info {
+  font-size: 14px;
+  color: #555;
+}
