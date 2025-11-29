@@ -110,3 +110,34 @@ footer{
 .Блог {
   opacity: 0.9;
 }
+
+
+/* Кнопки входу/реєстрації в правому верхньому куті */
+.auth-buttons {
+  position: fixed;      /* завжди в правому верхньому куті */
+  top: 10px;
+  right: 20px;
+  z-index: 1000;
+}
+
+.auth-buttons a {
+  display: inline-block;
+  padding: 8px 14px;
+  margin-left: 8px;
+  font-size: 14px;
+  text-decoration: none;
+  border-radius: 5px;
+  background-color: rgb(56, 56, 55);
+  color: #ffffff;
+}
+
+/* Кнопка "Sign up" світліша, як створення акаунта */
+.auth-buttons a.signup {
+  background-color: transparent;
+  color: rgb(56, 56, 55);
+  border: 1px solid rgb(56, 56, 55);
+}
+
+.auth-buttons a:hover {
+  opacity: 0.9;
+}
