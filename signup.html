@@ -27,6 +27,16 @@
             <input type="text" id="signupName" placeholder="Наприклад, Davyd" required>
           </label>
 
+          <label>
+            Пароль
+            <input type="password" id="signupPassword" required>
+          </label>
+
+          <label>
+            Повторіть пароль
+            <input type="password" id="signupPassword2" required>
+          </label>
+
           <button type="submit">Створити акаунт</button>
         </form>
 
@@ -44,12 +54,12 @@
     <script>
       function getUsers() {
         const raw = localStorage.getItem("pineUsers");
-        if (!raw) return [];
+        if (!raw) return {};
         try {
-          const arr = JSON.parse(raw);
-          return Array.isArray(arr) ? arr : [];
+          const obj = JSON.parse(raw);
+          return obj && typeof obj === "object" ? obj : {};
         } catch (e) {
-          return [];
+          return {};
         }
       }
 
@@ -59,20 +69,35 @@
 
       const signupForm = document.getElementById("signupForm");
       const signupNameInput = document.getElementById("signupName");
+      const signupPassInput = document.getElementById("signupPassword");
+      const signupPass2Input = document.getElementById("signupPassword2");
 
       signupForm.addEventListener("submit", function (e) {
         e.preventDefault();
         const name = signupNameInput.value.trim();
+        const pass = signupPassInput.value;
+        const pass2 = signupPass2Input.value;
+
         if (!name) return;
 
-        const users = getUsers();
-
-        if (users.includes(name)) {
-          alert("Таке ім’я вже зайняте. Обери інше ім’я.");
+        if (pass.length < 4) {
+          alert("Пароль має бути хоча б 4 символи.");
           return;
         }
 
-        users.push(name);
+        if (pass !== pass2) {
+          alert("Паролі не співпадають.");
+          return;
+        }
+
+        const users = getUsers();
+
+        if (users[name]) {
+          alert("Таке ім’я вже зайняте в цьому браузері. Обери інше ім’я.");
+          return;
+        }
+
+        users[name] = { password: pass };
         saveUsers(users);
 
         localStorage.setItem("pineUserName", name);
