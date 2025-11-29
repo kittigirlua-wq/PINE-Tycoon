@@ -8,12 +8,13 @@
     <!-- Основні стилі сайту -->
     <link rel="stylesheet" href="style.css">
 
-    <!-- Додаткові стилі тільки для снігу -->
+    <!-- Додаткові стилі: сніг + пошук користувачів -->
     <style>
+      /* Сніговий ефект */
       .snowflake {
         position: fixed;
         top: -10px;
-       color: rgb(61, 196, 255);
+        color: white;
         font-size: 14px;
         pointer-events: none;       /* щоб сніг не блокував кліки */
         z-index: 200;               /* нижче за кнопки Sign in / Sign up (там 1000) */
@@ -29,6 +30,86 @@
         100% {
           transform: translateY(110vh);
         }
+      }
+
+      /* Пошук користувачів */
+      .user-search {
+        margin: 20px 0;
+        max-width: 400px;
+      }
+
+      .user-search h2 {
+        margin: 0 0 8px 0;
+        font-size: 20px;
+        color: rgb(56, 56, 55);
+      }
+
+      .user-search form {
+        display: flex;
+        gap: 8px;
+        margin-bottom: 10px;
+      }
+
+      .user-search input {
+        flex: 1;
+        padding: 6px 10px;
+        font-size: 14px;
+      }
+
+      .user-search button {
+        padding: 6px 12px;
+        font-size: 14px;
+        background-color: rgb(56, 56, 55);
+        color: #fff;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+      }
+
+      .user-search button:hover {
+        opacity: 0.9;
+      }
+
+      .user-search-result {
+        font-size: 14px;
+        background: #ffffff;
+        border-radius: 8px;
+        padding: 10px;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+      }
+
+      .user-search-result .profile-card {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .user-search-result img.profile-avatar {
+        width: 48px;
+        height: 48px;
+        border-radius: 50%;
+        object-fit: cover;
+      }
+
+      .user-search-result .name {
+        font-weight: 600;
+        color: rgb(56, 56, 55);
+      }
+
+      .user-search-result .status {
+        font-size: 13px;
+      }
+
+      .user-search-result .status.online {
+        color: green;
+      }
+
+      .user-search-result .status.offline {
+        color: #999;
+      }
+
+      .user-search-result .not-found {
+        color: #555;
       }
     </style>
   </head>
@@ -65,6 +146,16 @@
         </div>
       </div>
 
+      <!-- Пошук інших користувачів -->
+      <section class="user-search">
+        <h2>Пошук гравця</h2>
+        <form id="userSearchForm">
+          <input type="text" id="userSearchInput" placeholder="Введіть нік користувача">
+          <button type="submit">Знайти</button>
+        </form>
+        <div id="userSearchResult" class="user-search-result"></div>
+      </section>
+
       <!-- Картинка гри -->
       <img 
         src="https://learn.logikaschool.com/uploads/student/4796102/6929d42d4c366.png" 
@@ -85,7 +176,7 @@
         БЛОГ
       </h1>
       <p>
-        Онолення Акаунтів! Тепер ви можете створити свій акаунт!
+        Поки що тут пусто...
       </p>
     </main>
 
@@ -93,10 +184,10 @@
       © 2025 PINE Tycoon — бета-версія гри
     </footer>
 
-    <!-- Скрипт: акаунт + аватар + Welcome -->
+    <!-- Скрипт: акаунти + аватар + Welcome + пошук -->
     <script>
       const DEFAULT_AVATAR = "https://learn.logikaschool.com/uploads/student/4796102/692acc8996fdc.png";
-      const DAVYD_AVATAR = "https://learn.logikaschool.com/uploads/student/4796102/692acfc896c23.png";
+      const DAVYD_AVATAR   = "https://learn.logikaschool.com/uploads/student/4796102/692acfc896c23.png";
 
       function getUsers() {
         const raw = localStorage.getItem("pineUsers");
@@ -111,10 +202,10 @@
 
       const nameDisplay = document.getElementById("userNameDisplay");
       const welcomeText = document.getElementById("welcomeText");
-      const avatarImg = document.querySelector(".user-avatar");
+      const avatarImg   = document.querySelector(".user-avatar");
 
       const currentName = localStorage.getItem("pineUserName");
-      const users = getUsers();
+      const users       = getUsers();
 
       let nameToShow = "Guest";
       if (currentName && users[currentName]) {
@@ -133,6 +224,43 @@
         avatarImg.src = DAVYD_AVATAR;
       } else {
         avatarImg.src = DEFAULT_AVATAR;
+      }
+
+      // ---- Пошук користувачів ----
+      const searchForm   = document.getElementById("userSearchForm");
+      const searchInput  = document.getElementById("userSearchInput");
+      const searchResult = document.getElementById("userSearchResult");
+
+      if (searchForm) {
+        searchForm.addEventListener("submit", function (e) {
+          e.preventDefault();
+          const query = searchInput.value.trim();
+          if (!query) {
+            searchResult.innerHTML = '<p class="not-found">Введіть нік для пошуку.</p>';
+            return;
+          }
+
+          const user = users[query];
+          if (!user) {
+            searchResult.innerHTML = '<p class="not-found">Користувача з таким ніком не знайдено (у цьому браузері).</p>';
+            return;
+          }
+
+          const isOnline = (currentName === query);
+          const avatarUrl = (query === "davyd3102") ? DAVYD_AVATAR : DEFAULT_AVATAR;
+
+          searchResult.innerHTML = `
+            <div class="profile-card">
+              <img src="${avatarUrl}" alt="Аватар ${query}" class="profile-avatar">
+              <div>
+                <div class="name">${query}</div>
+                <div class="status ${isOnline ? 'online' : 'offline'}">
+                  ${isOnline ? 'Зараз онлайн' : 'Зараз офлайн (не активний у цьому браузері)'}
+                </div>
+              </div>
+            </div>
+          `;
+        });
       }
     </script>
 
