@@ -1,129 +1,102 @@
+/* Плавна прокрутка до блогу */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Щоб footer був внизу */
+html,
 body {
-    font-family: sans-serif;
-   
-    
-    
-    
+  height: 100%;
+  margin: 0;
 }
-   
 
+/* Загальні стилі */
+body {
+  display: flex;
+  flex-direction: column;
+  font-family: sans-serif;
+  background-color: #f4f4f4;
+}
+
+/* Шапка сайту */
+header {
+  padding: 10px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* Меню зліва */
+.main-nav .nav-link {
+  margin-right: 15px;
+  text-decoration: none;
+  color: #000;
+  font-size: 18px;
+}
+
+/* Основний контейнер */
+main {
+  flex: 1;
+  padding: 20px;
+  max-width: 900px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+/* Заголовок блогу */
 h1 {
-    font-size: 40px;
-   
-    color:  rgb(56, 56, 55);
-    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+  font-size: 40px;
+  color: rgb(56, 56, 55);
+  font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+  margin-top: 40px;
 }
 
-.inf{
-    font-size: 20px;
-    font-weight: 700;
-    color:#481677;
+/* Інфо-текст */
+.inf {
+  font-size: 20px;
+  font-weight: 700;
+  color: #481677;
 }
 
-p{
-    width: 70%;
+/* Текст абзаців */
+p {
+  width: 70%;
 }
 
-main{
-   margin-left: 180px;
-}
-
-.about{
-   
-    background-color:  rgb(56, 56, 55);
-    top: 20px;
-     color: whitesmoke;
-}
-
-
-nav a{
-    position: absolute;
-    left:  -80px;
-    transition: 0.3s;
-    width: 100px;
-    padding: 15px;
-    text-decoration: none;
-    font-size: 20px;
-    color: white;
-   border-radius: 0px 5px 5px 0px;
-
-   
-}
-
-
-a:hover{
-    left: 0;
-}
-
-
-.blog{
-    top: 80px;
-    background-color:  rgb(56, 56, 55);
-     color: whitesmoke
-}
-
-.projects{
-    top: 140px;
-        background-color:  rgb(56, 56, 55);
-}
-
-.contact{
-     top: 200px;
-        background-color: rgb(56, 56, 55);
-}
-
-
-img{
-    
-    border-radius: 20px;
-    border: 0px solid  rgb(130, 213, 136) ;
-}
-
-
-img:hover{
-     transition: 0.3s;
-       opacity: 1;
-    border: 10px solid  rgb(56, 56, 55)
- ;
-    padding: 10px;
-}
-
-
-footer{
-    background-color:  rgb(56, 56, 55);
-    text-align: center;
-    color: aliceblue;
-  
-}
-
-.Блог {
+/* Лого/картинка по центру */
+.main-logo {
   display: block;
   margin: 20px auto;
-  padding: 15px 30px;
-  background-color: #383837;
-  color: #ffffff;
-  text-decoration: none;
-  border-radius: 8px;
-  font-size: 18px;
+  max-width: 55%;
+  border-radius: 20px;
+  border: 0px solid rgb(130, 213, 136);
+  transition: 0.3s;
+}
+
+.main-logo:hover {
+  opacity: 1;
+  border: 10px solid rgb(56, 56, 55);
+  padding: 10px;
+}
+
+/* Нижній прямокутний footer */
+footer {
+  background-color: rgb(56, 56, 55);
   text-align: center;
-}
-.Блог {
-  opacity: 0.9;
+  color: aliceblue;
+  padding: 15px 20px;
 }
 
-
-/* Кнопки входу/реєстрації в правому верхньому куті */
+/* Кнопки Sign in / Sign up у правому верхньому куті */
 .auth-buttons {
-  position: fixed;      /* завжди в правому верхньому куті */
-  top: 10px;
-  right: 20px;
-  z-index: 1000;
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
 .auth-buttons a {
   display: inline-block;
   padding: 8px 14px;
-  margin-left: 8px;
   font-size: 14px;
   text-decoration: none;
   border-radius: 5px;
@@ -131,7 +104,6 @@ footer{
   color: #ffffff;
 }
 
-/* Кнопка "Sign up" світліша, як створення акаунта */
 .auth-buttons a.signup {
   background-color: transparent;
   color: rgb(56, 56, 55);
@@ -139,5 +111,55 @@ footer{
 }
 
 .auth-buttons a:hover {
+  opacity: 0.9;
+}
+
+/* Блок акаунта зліва всередині main */
+.user-panel {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+.user-avatar {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.user-name-label {
+  font-size: 14px;
+  color: #555;
+}
+
+.user-name-value {
+  font-size: 18px;
+  font-weight: 700;
+  color: rgb(56, 56, 55);
+}
+
+/* Форма зміни імені */
+.user-form {
+  margin-bottom: 25px;
+}
+
+.user-form input {
+  padding: 6px 10px;
+  font-size: 14px;
+}
+
+.user-form button {
+  padding: 6px 12px;
+  margin-left: 8px;
+  background-color: rgb(56, 56, 55);
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.user-form button:hover {
   opacity: 0.9;
 }
