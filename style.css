@@ -239,3 +239,26 @@ footer {
 .auth-note a:hover {
   text-decoration: underline;
 }
+
+/* Сніговий ефект */
+.snowflake {
+  position: fixed;
+  top: -10px;
+  color: rgb(186, 182, 182);
+  font-size: 14px;
+  pointer-events: none;        /* щоб сніг не заважав клікам */
+  z-index: 200;                /* нижче за кнопки Sign in / Sign up (там 1000) */
+  animation-name: snow-fall;
+  animation-timing-function: linear;
+  animation-iteration-count: 1;
+}
+
+@keyframes snow-fall {
+  0% {
+    transform: translateY(-10vh);
+  }
+  100% {
+    transform: translateY(110vh);
+  }
+}
+
