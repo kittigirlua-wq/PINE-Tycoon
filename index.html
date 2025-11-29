@@ -8,7 +8,7 @@
     <!-- Основні стилі сайту -->
     <link rel="stylesheet" href="style.css">
 
-    <!-- Додаткові стилі: сніг + пошук користувачів + анімації + оновлення -->
+    <!-- Додаткові стилі: сніг + пошук користувачів + анімації + оновлення + налаштування + темна тема -->
     <style>
       /* Сніговий ефект (сині сніжинки) */
       .snowflake {
@@ -174,6 +174,67 @@
         font-size: 14px;
       }
 
+      /* Кнопка налаштувань у правому нижньому куті */
+      .settings-button {
+        position: fixed;
+        right: 20px;
+        bottom: 20px;
+        width: 44px;
+        height: 44px;
+        border-radius: 50%;
+        background-color: rgb(56, 56, 55);
+        color: #ffffff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+        z-index: 950;
+        font-size: 20px;
+        transition: transform 0.15s ease, opacity 0.15s ease;
+      }
+
+      .settings-button:hover {
+        opacity: 0.9;
+        transform: translateY(-1px);
+      }
+
+      .settings-panel {
+        position: fixed;
+        right: 20px;
+        bottom: 70px;
+        background-color: #ffffff;
+        color: #333333;
+        padding: 10px 14px;
+        border-radius: 10px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        z-index: 940;
+        font-size: 14px;
+        display: none;
+        min-width: 170px;
+      }
+
+      .settings-panel-title {
+        font-weight: 600;
+        margin-bottom: 6px;
+      }
+
+      .settings-panel button {
+        margin-top: 4px;
+        padding: 6px 10px;
+        font-size: 13px;
+        background-color: rgb(56, 56, 55);
+        color: #ffffff;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        width: 100%;
+      }
+
+      .settings-panel button:hover {
+        opacity: 0.9;
+      }
+
       /* Ключові кадри */
       @keyframes fade-in {
         from { opacity: 0; }
@@ -217,6 +278,58 @@
         0%   { transform: translateY(0); }
         50%  { transform: translateY(-3px); }
         100% { transform: translateY(0); }
+      }
+
+      /* ===== Темна тема ===== */
+      body.dark-theme {
+        background-color: rgb(69, 61, 61); /* твій колір */
+        color: #ffffff;
+      }
+
+      body.dark-theme .welcome-text,
+      body.dark-theme h1,
+      body.dark-theme h2,
+      body.dark-theme p,
+      body.dark-theme .user-name-label,
+      body.dark-theme .user-name-value {
+        color: #ffffff;
+      }
+
+      body.dark-theme footer {
+        background-color: rgb(48, 42, 42);
+      }
+
+      body.dark-theme .side-nav a {
+        background-color: rgb(48, 42, 42);
+      }
+
+      body.dark-theme .auth-buttons a {
+        background-color: rgb(48, 42, 42);
+        color: #ffffff;
+        border-color: #ffffff;
+      }
+
+      body.dark-theme .auth-buttons a.signup {
+        background-color: transparent;
+      }
+
+      body.dark-theme .update-box,
+      body.dark-theme .user-search-result {
+        background-color: #4d4444;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.6);
+      }
+
+      body.dark-theme .update-box .update-version {
+        color: #dddddd;
+      }
+
+      body.dark-theme .settings-panel {
+        background-color: #4d4444;
+        color: #ffffff;
+      }
+
+      body.dark-theme .settings-panel button {
+        background-color: #383232;
       }
     </style>
   </head>
@@ -312,7 +425,14 @@
       © 2025 PINE Tycoon — бета-версія гри
     </footer>
 
-    <!-- Скрипт: акаунти + аватар + Welcome + пошук -->
+    <!-- Кнопка і панель налаштувань -->
+    <div class="settings-button" id="settingsButton">⚙</div>
+    <div class="settings-panel" id="settingsPanel">
+      <div class="settings-panel-title">Налаштування</div>
+      <button id="themeToggleBtn">Тема: світла</button>
+    </div>
+
+    <!-- Скрипт: акаунти + аватар + Welcome + пошук + тема -->
     <script>
       const DEFAULT_AVATAR = "https://learn.logikaschool.com/uploads/student/4796102/692acc8996fdc.png";
       const DAVYD3102_AVATAR = "https://learn.logikaschool.com/uploads/student/4796102/692acfc896c23.png";
@@ -396,6 +516,49 @@
               </div>
             </div>
           `;
+        });
+      }
+
+      // ---- ТЕМА: світла / темна ----
+      const THEME_KEY = "pineTheme";
+      const settingsButton = document.getElementById("settingsButton");
+      const settingsPanel = document.getElementById("settingsPanel");
+      const themeToggleBtn = document.getElementById("themeToggleBtn");
+
+      function applyTheme(theme) {
+        if (theme === "dark") {
+          document.body.classList.add("dark-theme");
+        } else {
+          document.body.classList.remove("dark-theme");
+        }
+      }
+
+      function updateThemeButton(theme) {
+        if (!themeToggleBtn) return;
+        themeToggleBtn.textContent = theme === "dark" ? "Тема: темна" : "Тема: світла";
+      }
+
+      // Застосувати тему при завантаженні
+      const savedTheme = localStorage.getItem(THEME_KEY) || "light";
+      applyTheme(savedTheme);
+      updateThemeButton(savedTheme);
+
+      // Показ / сховати панель
+      if (settingsButton && settingsPanel) {
+        settingsButton.addEventListener("click", () => {
+          const isVisible = settingsPanel.style.display === "block";
+          settingsPanel.style.display = isVisible ? "none" : "block";
+        });
+      }
+
+      // Перемикання теми
+      if (themeToggleBtn) {
+        themeToggleBtn.addEventListener("click", () => {
+          const isDark = document.body.classList.contains("dark-theme");
+          const newTheme = isDark ? "light" : "dark";
+          applyTheme(newTheme);
+          updateThemeButton(newTheme);
+          localStorage.setItem(THEME_KEY, newTheme);
         });
       }
     </script>
