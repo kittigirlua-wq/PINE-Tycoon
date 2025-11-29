@@ -3,22 +3,14 @@
   <head>
     <meta charset="UTF-8" />
     <title>PINE Tycoon</title>
-
-    <!-- Щоб сайт добре виглядав на телефоні -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <!-- Підключаємо стилі -->
     <link rel="stylesheet" href="style.css">
   </head>
 
-  <body>
+  <!-- has-sidebar = є меню зліва -->
+  <body class="has-sidebar">
     <header>
-      <!-- Головне меню зліва -->
-      <nav class="main-nav">
-        <a href="game.html" class="nav-link">Грати!</a>
-        <a href="#blog" class="nav-link">Блог</a>
-      </nav>
-
       <!-- Кнопки входу / реєстрації справа вгорі -->
       <div class="auth-buttons">
         <a href="login.html" class="signin">Sign in</a>
@@ -26,8 +18,17 @@
       </div>
     </header>
 
+    <!-- Бокове меню з анімацією (виїжджає зліва) -->
+    <nav class="side-nav">
+      <a href="game.html" class="about">Грати!</a>
+      <a href="#blog" class="blog">Блог</a>
+    </nav>
+
     <main>
-      <!-- Блок акаунта зліва всередині main -->
+      <!-- Привітання -->
+      <p class="welcome-text" id="welcomeText">Welcome Guest</p>
+
+      <!-- Блок акаунта зліва в main -->
       <div class="user-panel">
         <img 
           src="https://learn.logikaschool.com/uploads/student/4796102/692acc8996fdc.png" 
@@ -39,15 +40,6 @@
           <div class="user-name-value" id="userNameDisplay">Гість</div>
         </div>
       </div>
-
-      <!-- Форма для введення/зміни імені -->
-      <form class="user-form" id="userForm">
-        <label>
-          Введіть своє ім’я:
-          <input type="text" id="userNameInput" placeholder="Наприклад, Davyd">
-        </label>
-        <button type="submit">Зберегти</button>
-      </form>
 
       <!-- Картинка гри по центру -->
       <img 
@@ -77,27 +69,20 @@
       © 2025 PINE Tycoon — бета-версія гри
     </footer>
 
-    <!-- Скрипт для зміни/збереження імені акаунта -->
+    <!-- Скрипт: показ "Welcome ..." та імені -->
     <script>
-      const form = document.getElementById('userForm');
-      const input = document.getElementById('userNameInput');
-      const display = document.getElementById('userNameDisplay');
+      const nameDisplay = document.getElementById('userNameDisplay');
+      const welcomeText = document.getElementById('welcomeText');
 
-      // Якщо ім’я вже збережене в браузері – показуємо його
       const savedName = localStorage.getItem('pineUserName');
+
       if (savedName) {
-        display.textContent = savedName;
+        nameDisplay.textContent = savedName;
+        welcomeText.textContent = 'Welcome ' + savedName;
+      } else {
+        nameDisplay.textContent = 'Гість';
+        welcomeText.textContent = 'Welcome Guest';
       }
-
-      form.addEventListener('submit', function (e) {
-        e.preventDefault();
-        const name = input.value.trim();
-        if (!name) return;
-
-        display.textContent = name;
-        localStorage.setItem('pineUserName', name);
-        input.value = '';
-      });
     </script>
   </body>
 </html>
