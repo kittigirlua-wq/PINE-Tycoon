@@ -1,304 +1,113 @@
-/* Плавна прокрутка до блогу */
-html {
-  scroll-behavior: smooth;
-}
+<!DOCTYPE html>
+<html lang="uk">
+  <head>
+    <meta charset="UTF-8" />
+    <title>PINE Tycoon</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="style.css">
+  </head>
 
-/* Щоб footer був внизу */
-html,
-body {
-  height: 100%;
-  margin: 0;
-}
+  <body class="has-sidebar">
+    <header>
+      <!-- Кнопки входу / реєстрації справа вгорі -->
+      <div class="auth-buttons">
+        <a href="login.html" class="signin">Sign in</a>
+        <a href="signup.html" class="signup">Sign up</a>
+      </div>
+    </header>
 
-/* Загальні стилі */
-body {
-  display: flex;
-  flex-direction: column;
-  font-family: sans-serif;
-  background-color: #f4f4f4;
-}
+    <!-- Бокове меню з анімацією зліва -->
+    <nav class="side-nav">
+      <a href="game.html" class="about">Грати!</a>
+      <a href="#blog" class="blog">Блог</a>
+    </nav>
 
-/* Шапка */
-header {
-  height: 60px;
-}
+    <main>
+      <!-- Привітання -->
+      <p class="welcome-text" id="welcomeText">Welcome Guest</p>
 
-/* Кнопки Sign in / Sign up у правому верхньому куті */
-.auth-buttons {
-  position: fixed;
-  top: 10px;
-  right: 20px;
-  display: flex;
-  gap: 8px;
-  z-index: 1000;
-}
+      <!-- Блок акаунта -->
+      <div class="user-panel">
+        <img 
+          src="https://learn.logikaschool.com/uploads/student/4796102/692acc8996fdc.png" 
+          alt="Аватар" 
+          class="user-avatar"
+        >
+        <div>
+          <div class="user-name-label">Акаунт:</div>
+          <div class="user-name-value" id="userNameDisplay">Гість</div>
+        </div>
+      </div>
 
-.auth-buttons a {
-  display: inline-block;
-  padding: 8px 14px;
-  font-size: 14px;
-  text-decoration: none;
-  border-radius: 5px;
-  background-color: rgb(56, 56, 55);
-  color: #ffffff;
-}
+      <!-- Картинка гри -->
+      <img 
+        src="https://learn.logikaschool.com/uploads/student/4796102/6929d42d4c366.png" 
+        alt="PINE Tycoon" 
+        class="main-logo"
+      />
 
-.auth-buttons a.signup {
-  background-color: transparent;
-  color: rgb(56, 56, 55);
-  border: 1px solid rgb(56, 56, 55);
-}
+      <p class="inf"></p>
+      <p>
+        Ласкаво просимо до затишного місця "PINE Tycoon". У цій грі вам потрібно
+        рубати дрова та будувати своє власне затишне село!
+      </p>
+      <p>
+        Ця версія гри не фінальна, тому може бути багато багів і гра може змінитися з часом.
+      </p>
 
-.auth-buttons a:hover {
-  opacity: 0.9;
-}
+      <h1 id="blog">
+        БЛОГ
+      </h1>
+      <p>
+        Поки що тут пусто...
+      </p>
+    </main>
 
-/* Бокове меню з анімацією зліва */
-.side-nav a {
-  position: fixed;
-  left: -120px;
-  transition: left 0.3s;
-  width: 140px;
-  padding: 15px;
-  text-decoration: none;
-  font-size: 20px;
-  color: white;
-  border-radius: 0 5px 5px 0;
-  background-color: rgb(56, 56, 55);
-  z-index: 500;
-}
+    <footer>
+      © 2025 PINE Tycoon — бета-версія гри
+    </footer>
 
-.side-nav a:hover {
-  left: 0;
-}
+    <!-- Скрипт: акаунт + аватар + Welcome -->
+    <script>
+      const DEFAULT_AVATAR = "https://learn.logikaschool.com/uploads/student/4796102/692acc8996fdc.png";
+      const DAVYD_AVATAR = "https://learn.logikaschool.com/uploads/student/4796102/692acfc896c23.png";
 
-.side-nav .about {
-  top: 120px;
-}
+      function getUsers() {
+        const raw = localStorage.getItem("pineUsers");
+        if (!raw) return {};
+        try {
+          const obj = JSON.parse(raw);
+          return obj && typeof obj === "object" ? obj : {};
+        } catch (e) {
+          return {};
+        }
+      }
 
-.side-nav .blog {
-  top: 180px;
-}
+      const nameDisplay = document.getElementById("userNameDisplay");
+      const welcomeText = document.getElementById("welcomeText");
+      const avatarImg = document.querySelector(".user-avatar");
 
-/* Основний контейнер */
-main {
-  flex: 1;
-  padding: 20px;
-}
+      const currentName = localStorage.getItem("pineUserName");
+      const users = getUsers();
 
-/* Відступ під бокове меню */
-body.has-sidebar main {
-  margin-left: 180px;
-}
+      let nameToShow = "Guest";
+      if (currentName && users[currentName]) {
+        nameToShow = currentName;
+      }
 
-/* Привітання Welcome ... */
-.welcome-text {
-  font-size: 20px;
-  margin-bottom: 10px;
-  color: rgb(56, 56, 55);
-  font-weight: 600;
-}
+      if (nameToShow === "Guest") {
+        nameDisplay.textContent = "Гість";
+        welcomeText.textContent = "Welcome Guest";
+      } else {
+        nameDisplay.textContent = nameToShow;
+        welcomeText.textContent = "Welcome " + nameToShow;
+      }
 
-/* Заголовок блогу */
-h1 {
-  font-size: 40px;
-  color: rgb(56, 56, 55);
-  font-family: "Gill Sans", "Gill Sans MT", Calibri, "Trebuchet MS", sans-serif;
-  margin-top: 40px;
-}
-
-/* Інфо-текст */
-.inf {
-  font-size: 20px;
-  font-weight: 700;
-  color: #481677;
-}
-
-/* Текст абзаців */
-p {
-  width: 70%;
-}
-
-/* Лого/картинка по центру */
-.main-logo {
-  display: block;
-  margin: 20px auto;
-  max-width: 55%;
-  border-radius: 20px;
-  border: 0px solid rgb(130, 213, 136);
-  transition: 0.3s;
-}
-
-.main-logo:hover {
-  opacity: 1;
-  border: 10px solid rgb(56, 56, 55);
-  padding: 10px;
-}
-
-/* Блок акаунта */
-.user-panel {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-bottom: 15px;
-}
-
-.user-avatar {
-  width: 64px;
-  height: 64px;
-  border-radius: 50%;
-  object-fit: cover;
-}
-
-.user-name-label {
-  font-size: 14px;
-  color: #555;
-}
-
-.user-name-value {
-  font-size: 18px;
-  font-weight: 700;
-  color: rgb(56, 56, 55);
-}
-
-/* Футер */
-footer {
-  background-color: rgb(56, 56, 55);
-  text-align: center;
-  color: aliceblue;
-  padding: 15px 20px;
-}
-
-/* Сторінки логіну / реєстрації */
-.auth-page-main {
-  flex: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 20px;
-}
-
-.auth-card {
-  background-color: #ffffff;
-  padding: 24px 28px;
-  border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  width: 320px;
-}
-
-.auth-card h1 {
-  margin-top: 0;
-  margin-bottom: 10px;
-  color: rgb(56, 56, 55);
-}
-
-.auth-card p {
-  width: 100%;
-  margin-bottom: 16px;
-}
-
-.auth-card label {
-  display: block;
-  font-size: 14px;
-  margin-bottom: 8px;
-}
-
-.auth-card input {
-  width: 100%;
-  padding: 8px 10px;
-  font-size: 14px;
-  margin-top: 4px;
-  box-sizing: border-box;
-}
-
-.auth-card button {
-  width: 100%;
-  padding: 8px 12px;
-  margin-top: 12px;
-  background-color: rgb(56, 56, 55);
-  color: #fff;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-}
-
-.auth-card button:hover {
-  opacity: 0.9;
-}
-
-.auth-note {
-  font-size: 14px;
-  margin-top: 12px;
-}
-
-.auth-note a {
-  color: rgb(56, 56, 55);
-  text-decoration: none;
-}
-
-.auth-note a:hover {
-  text-decoration: underline;
-}
-
-/* Коментарі блогу */
-.comments-section {
-  margin-top: 20px;
-  max-width: 700px;
-}
-
-.comments-section h2 {
-  margin-bottom: 10px;
-  font-size: 24px;
-  color: rgb(56, 56, 55);
-}
-
-.comments-list {
-  list-style: none;
-  padding: 0;
-  margin: 0 0 15px 0;
-}
-
-.comment-item {
-  padding: 8px 10px;
-  margin-bottom: 8px;
-  background: #ffffff;
-  border-radius: 6px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
-}
-
-.comment-author {
-  font-weight: 600;
-  margin-bottom: 4px;
-  color: rgb(56, 56, 55);
-}
-
-.comment-text {
-  font-size: 14px;
-}
-
-.comment-form textarea {
-  width: 100%;
-  min-height: 60px;
-  padding: 6px 8px;
-  box-sizing: border-box;
-  resize: vertical;
-}
-
-.comment-form button {
-  margin-top: 8px;
-  padding: 6px 12px;
-  background-color: rgb(56, 56, 55);
-  color: #fff;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-}
-
-.comment-form button:hover {
-  opacity: 0.9;
-}
-
-.comment-info {
-  font-size: 14px;
-  color: #555;
-}
+      if (nameToShow === "davyd3102") {
+        avatarImg.src = DAVYD_AVATAR;
+      } else {
+        avatarImg.src = DEFAULT_AVATAR;
+      }
+    </script>
+  </body>
+</html>
