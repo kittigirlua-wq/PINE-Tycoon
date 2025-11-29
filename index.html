@@ -8,7 +8,6 @@
     <link rel="stylesheet" href="style.css">
   </head>
 
-  <!-- has-sidebar = є меню зліва -->
   <body class="has-sidebar">
     <header>
       <!-- Кнопки входу / реєстрації справа вгорі -->
@@ -18,7 +17,7 @@
       </div>
     </header>
 
-    <!-- Бокове меню з анімацією (виїжджає зліва) -->
+    <!-- Бокове меню з анімацією зліва -->
     <nav class="side-nav">
       <a href="game.html" class="about">Грати!</a>
       <a href="#blog" class="blog">Блог</a>
@@ -28,7 +27,7 @@
       <!-- Привітання -->
       <p class="welcome-text" id="welcomeText">Welcome Guest</p>
 
-      <!-- Блок акаунта зліва в main -->
+      <!-- Блок акаунта -->
       <div class="user-panel">
         <img 
           src="https://learn.logikaschool.com/uploads/student/4796102/692acc8996fdc.png" 
@@ -41,7 +40,7 @@
         </div>
       </div>
 
-      <!-- Картинка гри по центру -->
+      <!-- Картинка гри -->
       <img 
         src="https://learn.logikaschool.com/uploads/student/4796102/6929d42d4c366.png" 
         alt="PINE Tycoon" 
@@ -60,29 +59,152 @@
       <h1 id="blog">
         БЛОГ
       </h1>
-      <p>
-        Поки що тут пусто...
-      </p>
+
+      <!-- Коментарі блогу -->
+      <div class="comments-section">
+        <h2>Коментарі</h2>
+        <p id="noCommentsText">Поки що тут немає коментарів...</p>
+        <ul id="commentsList" class="comments-list"></ul>
+
+        <div id="commentFormWrapper"></div>
+      </div>
     </main>
 
     <footer>
       © 2025 PINE Tycoon — бета-версія гри
     </footer>
 
-    <!-- Скрипт: показ "Welcome ..." та імені -->
+    <!-- Скрипт: акаунт + аватар + коментарі -->
     <script>
-      const nameDisplay = document.getElementById('userNameDisplay');
-      const welcomeText = document.getElementById('welcomeText');
+      (function () {
+        const DEFAULT_AVATAR = "https://learn.logikaschool.com/uploads/student/4796102/692acc8996fdc.png";
+        const DAVYD_AVATAR = "https://learn.logikaschool.com/uploads/student/4796102/692acfc896c23.png";
 
-      const savedName = localStorage.getItem('pineUserName');
+        function getUsers() {
+          const raw = localStorage.getItem("pineUsers");
+          if (!raw) return [];
+          try {
+            const arr = JSON.parse(raw);
+            return Array.isArray(arr) ? arr : [];
+          } catch (e) {
+            return [];
+          }
+        }
 
-      if (savedName) {
-        nameDisplay.textContent = savedName;
-        welcomeText.textContent = 'Welcome ' + savedName;
-      } else {
-        nameDisplay.textContent = 'Гість';
-        welcomeText.textContent = 'Welcome Guest';
-      }
+        function getComments() {
+          const raw = localStorage.getItem("pineBlogComments");
+          if (!raw) return [];
+          try {
+            const arr = JSON.parse(raw);
+            return Array.isArray(arr) ? arr : [];
+          } catch (e) {
+            return [];
+          }
+        }
+
+        function saveComments(comments) {
+          localStorage.setItem("pineBlogComments", JSON.stringify(comments));
+        }
+
+        const nameDisplay = document.getElementById("userNameDisplay");
+        const welcomeText = document.getElementById("welcomeText");
+        const avatarImg = document.querySelector(".user-avatar");
+
+        const currentName = localStorage.getItem("pineUserName");
+        const users = getUsers();
+
+        let nameToShow = "Guest";
+        if (currentName && users.includes(currentName)) {
+          nameToShow = currentName;
+        }
+
+        if (nameToShow === "Guest") {
+          nameDisplay.textContent = "Гість";
+          welcomeText.textContent = "Welcome Guest";
+        } else {
+          nameDisplay.textContent = nameToShow;
+          welcomeText.textContent = "Welcome " + nameToShow;
+        }
+
+        if (nameToShow === "davyd3102") {
+          avatarImg.src = DAVYD_AVATAR;
+        } else {
+          avatarImg.src = DEFAULT_AVATAR;
+        }
+
+        // ----- Рендер коментарів -----
+        const commentsListEl = document.getElementById("commentsList");
+        const noCommentsText = document.getElementById("noCommentsText");
+        const commentFormWrapper = document.getElementById("commentFormWrapper");
+
+        function renderComments() {
+          const comments = getComments();
+          commentsListEl.innerHTML = "";
+          if (!comments.length) {
+            noCommentsText.style.display = "block";
+            return;
+          }
+          noCommentsText.style.display = "none";
+
+          comments.forEach((c) => {
+            const li = document.createElement("li");
+            li.className = "comment-item";
+
+            const authorDiv = document.createElement("div");
+            authorDiv.className = "comment-author";
+            authorDiv.textContent = c.author;
+
+            const textDiv = document.createElement("div");
+            textDiv.className = "comment-text";
+            textDiv.textContent = c.text;
+
+            li.appendChild(authorDiv);
+            li.appendChild(textDiv);
+
+            commentsListEl.appendChild(li);
+          });
+        }
+
+        renderComments();
+
+        // ----- Форма коментарів -----
+        if (nameToShow === "davyd3102") {
+          commentFormWrapper.innerHTML = `
+            <form id="commentForm" class="comment-form">
+              <label>
+                Ваш коментар:
+                <textarea id="commentText" required></textarea>
+              </label>
+              <button type="submit">Надіслати</button>
+            </form>
+          `;
+
+          const commentForm = document.getElementById("commentForm");
+          const commentTextEl = document.getElementById("commentText");
+
+          commentForm.addEventListener("submit", function (e) {
+            e.preventDefault();
+            const text = commentTextEl.value.trim();
+            if (!text) return;
+
+            const comments = getComments();
+            comments.push({
+              author: nameToShow,
+              text: text,
+              time: Date.now(),
+            });
+            saveComments(comments);
+            commentTextEl.value = "";
+            renderComments();
+          });
+        } else {
+          commentFormWrapper.innerHTML = `
+            <p class="comment-info">
+              Щоб залишати коментарі, потрібно зайти як <strong>davyd3102</strong>.
+            </p>
+          `;
+        }
+      })();
     </script>
   </body>
 </html>
