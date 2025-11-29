@@ -4,7 +4,33 @@
     <meta charset="UTF-8" />
     <title>PINE Tycoon</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- Основні стилі сайту -->
     <link rel="stylesheet" href="style.css">
+
+    <!-- Додаткові стилі тільки для снігу -->
+    <style>
+      .snowflake {
+        position: fixed;
+        top: -10px;
+        color: white;
+        font-size: 14px;
+        pointer-events: none;       /* щоб сніг не блокував кліки */
+        z-index: 200;               /* нижче за кнопки Sign in / Sign up (там 1000) */
+        animation-name: snow-fall;
+        animation-timing-function: linear;
+        animation-iteration-count: 1;
+      }
+
+      @keyframes snow-fall {
+        0% {
+          transform: translateY(-10vh);
+        }
+        100% {
+          transform: translateY(110vh);
+        }
+      }
+    </style>
   </head>
 
   <body class="has-sidebar">
@@ -59,9 +85,8 @@
         БЛОГ
       </h1>
       <p>
-      Оновлення акаунтів! Тепер ви можете створити свій власний акаунт.
+        Поки що тут пусто...
       </p>
-  
     </main>
 
     <footer>
@@ -109,6 +134,34 @@
       } else {
         avatarImg.src = DEFAULT_AVATAR;
       }
+    </script>
+
+    <!-- Скрипт: снігопад -->
+    <script>
+      function createSnowflake() {
+        const snowflake = document.createElement('div');
+        snowflake.classList.add('snowflake');
+        snowflake.textContent = '❄';
+
+        // випадкова позиція по ширині
+        snowflake.style.left = Math.random() * 100 + 'vw';
+        // випадковий розмір
+        snowflake.style.fontSize = (10 + Math.random() * 14) + 'px';
+        // випадкова прозорість
+        snowflake.style.opacity = (0.4 + Math.random() * 0.6).toString();
+        // випадкова тривалість падіння
+        snowflake.style.animationDuration = (5 + Math.random() * 5) + 's';
+
+        document.body.appendChild(snowflake);
+
+        // коли анімація закінчиться – видаляємо сніжинку
+        snowflake.addEventListener('animationend', () => {
+          snowflake.remove();
+        });
+      }
+
+      // створюємо нову сніжинку кожні 200 мс
+      setInterval(createSnowflake, 200);
     </script>
   </body>
 </html>
