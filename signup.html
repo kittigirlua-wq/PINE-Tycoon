@@ -1,36 +1,62 @@
 <!DOCTYPE html>
 <html lang="uk">
-<head>
-  <meta charset="UTF-8">
-  <title>Sign up — PINE Tycoon</title>
-  <link rel="stylesheet" href="style.css">
-</head>
-<body>
-  <main style="max-width: 400px; margin: 80px auto;">
-    <h1>Sign up</h1>
-    <form>
-      <label>
-        Email<br>
-        <input type="email" required>
-      </label>
-      <br><br>
-      <label>
-        Пароль<br>
-        <input type="password" required>
-      </label>
-      <br><br>
-      <label>
-        Повторіть пароль<br>
-        <input type="password" required>
-      </label>
-      <br><br>
-      <button type="submit">Створити акаунт</button>
-    </form>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Sign up — PINE Tycoon</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <p>
-      Вже маєш акаунт?
-      <a href="login.html">Sign in</a>
-    </p>
-  </main>
-</body>
+    <link rel="stylesheet" href="style.css">
+  </head>
+
+  <body>
+    <header>
+      <div class="auth-buttons">
+        <a href="login.html" class="signin">Sign in</a>
+        <a href="signup.html" class="signup">Sign up</a>
+      </div>
+    </header>
+
+    <main class="auth-page-main">
+      <div class="auth-card">
+        <h1>Sign up</h1>
+        <p>Створи свій акаунт для PINE Tycoon.</p>
+
+        <form id="signupForm">
+          <label>
+            Ім’я
+            <input type="text" id="signupName" placeholder="Наприклад, Davyd" required>
+          </label>
+
+          <button type="submit">Створити акаунт</button>
+        </form>
+
+        <p class="auth-note">
+          Вже маєш акаунт?
+          <a href="login.html">Sign in</a>
+        </p>
+      </div>
+    </main>
+
+    <footer>
+      © 2025 PINE Tycoon — бета-версія гри
+    </footer>
+
+    <script>
+      const signupForm = document.getElementById('signupForm');
+      const signupNameInput = document.getElementById('signupName');
+
+      signupForm.addEventListener('submit', function (e) {
+        e.preventDefault();
+        const name = signupNameInput.value.trim();
+        if (!name) return;
+
+        // Зберігаємо ім’я та помічаємо, що є акаунт
+        localStorage.setItem('pineUserName', name);
+        localStorage.setItem('pineHasAccount', 'true');
+
+        // Перекидаємо на головну
+        window.location.href = 'index.html';
+      });
+    </script>
+  </body>
 </html>
