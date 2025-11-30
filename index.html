@@ -5,38 +5,38 @@
     <title>PINE Tycoon</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <!-- Якщо в тебе є свій style.css – залишай -->
+    <!-- Підключаємо твій CSS з анімаційними кнопками -->
     <link rel="stylesheet" href="style.css">
 
     <style>
-      body {
+      /* Робимо сторінку на всю висоту + footer внизу */
+      html, body {
+        height: 100%;
         margin: 0;
-        font-family: Arial, sans-serif;
-        background: #f4f4f4;
-        color: #333;
+      }
+
+      body {
         display: flex;
         flex-direction: column;
-        min-height: 100vh;
+        background: #f4f4f4;
       }
 
       header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 10px 20px;
-        background: #ffffff;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.08);
+        position: relative;
+        min-height: 50px;
       }
 
-      .logo {
-        font-weight: 700;
-        font-size: 20px;
+      main {
+        flex: 1;
+        padding: 20px;
       }
 
-      nav a {
-        margin-right: 10px;
-        text-decoration: none;
-        color: #333;
+      /* Блок з кнопками Sign in / Sign up / Log out у правому верхньому куті */
+      .auth-buttons {
+        position: fixed;
+        top: 10px;
+        right: 20px;
+        z-index: 1000;
       }
 
       .auth-buttons a,
@@ -45,25 +45,24 @@
         padding: 6px 12px;
         font-size: 14px;
         border-radius: 4px;
-        border: 1px solid #333;
-        background: #fff;
-        color: #333;
+        border: 1px solid rgb(56,56,55);
+        background: #ffffff;
+        color: rgb(56,56,55);
         text-decoration: none;
         cursor: pointer;
       }
 
       .auth-buttons button {
-        border: 1px solid #c00;
+        border-color: #c00;
         color: #c00;
       }
 
-      main {
-        flex: 1;
-        padding: 20px;
-        max-width: 900px;
-        margin: 0 auto;
+      .auth-buttons a:hover,
+      .auth-buttons button:hover {
+        opacity: 0.9;
       }
 
+      /* Привітання + панель акаунта */
       .welcome-text {
         font-size: 18px;
         margin-bottom: 10px;
@@ -79,6 +78,7 @@
         background: #ffffff;
         box-shadow: 0 2px 6px rgba(0,0,0,0.08);
         margin-bottom: 20px;
+        max-width: 320px;
       }
 
       .user-avatar {
@@ -88,30 +88,53 @@
         object-fit: cover;
       }
 
-      footer {
-        text-align: center;
-        padding: 10px;
-        background: #383837;
-        color: #fff;
+      /* Картинка гри */
+      .main-logo {
+        max-width: 60%;
+        border-radius: 20px;
+        display: block;
+        margin-bottom: 20px;
+      }
+
+      /* Сніг (сині сніжинки) */
+      .snowflake {
+        position: fixed;
+        top: -10px;
+        color: #66c7ff;
+        font-size: 14px;
+        pointer-events: none;
+        z-index: 200;
+        animation-name: snow-fall;
+        animation-timing-function: linear;
+        animation-iteration-count: 1;
+        text-shadow: 0 0 4px rgba(0, 0, 0, 0.35);
+      }
+
+      @keyframes snow-fall {
+        0% {
+          transform: translateY(-10vh);
+        }
+        100% {
+          transform: translateY(110vh);
+        }
       }
     </style>
   </head>
 
   <body>
     <header>
-      <div class="logo">PINE Tycoon</div>
-
-      <nav>
-        <a href="game.html">Грати!</a>
-        <a href="#blog">Блог</a>
-      </nav>
-
+      <!-- Кнопки входу/реєстрації/виходу (правий верхній кут) -->
       <div class="auth-buttons">
-        <!-- Кнопки аутентифікації -->
         <a href="login.html" id="loginLink">Sign in</a>
         <a href="signup.html" id="signupLink">Sign up</a>
         <button id="logoutBtn" style="display:none;">Log out</button>
       </div>
+
+      <!-- Ліві анімаційні кнопки з твого style.css -->
+      <nav>
+        <a href="game.html" class="about">Грати!</a>
+        <a href="#blog" class="blog">Блог</a>
+      </nav>
     </header>
 
     <main>
@@ -130,13 +153,14 @@
         </div>
       </div>
 
-      <!-- Основний контент -->
+      <!-- Основна картинка гри -->
       <img
         src="https://learn.logikaschool.com/uploads/student/4796102/6929d42d4c366.png"
         alt="PINE Tycoon"
-        style="max-width:60%;border-radius:20px;display:block;margin-bottom:20px;"
+        class="main-logo"
       />
 
+      <p class="inf"></p>
       <p>
         Ласкаво просимо до затишного місця "PINE Tycoon". У цій грі вам потрібно
         рубати дрова та будувати своє власне затишне село!
@@ -153,7 +177,7 @@
       © 2025 PINE Tycoon — бета-версія гри
     </footer>
 
-    <!-- Firebase: підключення й відображення Welcome -->
+    <!-- Firebase: Welcome + аватар + кнопки входу/виходу -->
     <script type="module">
       import { initializeApp } from 'https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js';
       import {
@@ -162,7 +186,6 @@
         signOut
       } from 'https://www.gstatic.com/firebasejs/12.6.0/firebase-auth.js';
 
-      // Твій firebaseConfig (з консолі Firebase)
       const firebaseConfig = {
         apiKey: "AIzaSyDZEwAbFwLQXxlkkmuMKBFof2J3OE02Egs",
         authDomain: "pine-tycoon.firebaseapp.com",
@@ -176,18 +199,18 @@
       const app  = initializeApp(firebaseConfig);
       const auth = getAuth(app);
 
-      const welcomeText = document.getElementById('welcomeText');
+      const welcomeText     = document.getElementById('welcomeText');
       const userNameDisplay = document.getElementById('userNameDisplay');
-      const avatarImg = document.querySelector('.user-avatar');
+      const avatarImg       = document.querySelector('.user-avatar');
 
       const loginLink  = document.getElementById('loginLink');
       const signupLink = document.getElementById('signupLink');
       const logoutBtn  = document.getElementById('logoutBtn');
 
-      const DEFAULT_AVATAR      = "https://learn.logikaschool.com/uploads/student/4796102/692acc8996fdc.png";
-      const DAVYD3102_AVATAR    = "https://learn.logikaschool.com/uploads/student/4796102/692acfc896c23.png";
-      const EXTRA_AVATAR        = "https://learn.logikaschool.com/uploads/student/4796102/692b12eb74937.png";
-      const GRIVIELD_AVATAR     = "https://learn.logikaschool.com/uploads/student/4796102/692b1a155937b.png";
+      const DEFAULT_AVATAR   = "https://learn.logikaschool.com/uploads/student/4796102/692acc8996fdc.png";
+      const DAVYD3102_AVATAR = "https://learn.logikaschool.com/uploads/student/4796102/692acfc896c23.png";
+      const EXTRA_AVATAR     = "https://learn.logikaschool.com/uploads/student/4796102/692b12eb74937.png";
+      const GRIVIELD_AVATAR  = "https://learn.logikaschool.com/uploads/student/4796102/692b1a155937b.png";
 
       function getAvatarForName(name) {
         const map = {
@@ -208,7 +231,7 @@
           userNameDisplay.textContent  = name;
           avatarImg.src = getAvatarForName(name);
 
-          loginLink.style.display  = "none";
+          loginLink.style.display  = "inline-block";
           signupLink.style.display = "none";
           logoutBtn.style.display  = "inline-block";
         } else {
@@ -231,6 +254,28 @@
           alert("Не вдалося вийти: " + err.message);
         }
       });
+    </script>
+
+    <!-- Снігопад -->
+    <script>
+      function createSnowflake() {
+        const snowflake = document.createElement('div');
+        snowflake.classList.add('snowflake');
+        snowflake.textContent = '❄';
+
+        snowflake.style.left = Math.random() * 100 + 'vw';
+        snowflake.style.fontSize = (10 + Math.random() * 14) + 'px';
+        snowflake.style.opacity = (0.4 + Math.random() * 0.6).toString();
+        snowflake.style.animationDuration = (5 + Math.random() * 5) + 's';
+
+        document.body.appendChild(snowflake);
+
+        snowflake.addEventListener('animationend', () => {
+          snowflake.remove();
+        });
+      }
+
+      setInterval(createSnowflake, 200);
     </script>
   </body>
 </html>
