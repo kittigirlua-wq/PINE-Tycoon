@@ -384,41 +384,47 @@ function makeTextSprite(message, color = "#ffffff") {
 
 function getOrCreateRemotePlayer(uid, name) {
   let p = remotePlayers.get(uid);
+
   if (!p) {
     const group = new THREE.Group();
 
-    // Низький напівпрозорий круг (модель гравця)
-    const circle = new THREE.Mesh(
-      new THREE.CylinderGeometry(0.8, 0.8, 0.1, 24), // радіус 0.8, тонкий
+    // 🔵 Напівпрозора сфера — "гравець"
+    const bubble = new THREE.Mesh(
+      new THREE.SphereGeometry(0.7, 20, 20), // трошки більша за голову
       new THREE.MeshStandardMaterial({
-        color: 0x3498db,      // синюватий
+        color: 0x3498db,
         transparent: true,
-        opacity: 0.45         // "трохи невидимий"
+        opacity: 0.4,        // трохи невидима
+        emissive: 0x3498db,  // легке свічення
+        emissiveIntensity: 0.2
       })
     );
-    circle.position.y = 0.05;
-    circle.receiveShadow = true;
-    group.add(circle);
+    bubble.position.y = 1.6; // там, де раніше була голова
+    bubble.castShadow = true;
+    bubble.receiveShadow = true;
+    group.add(bubble);
 
-    // Ім’я над кругом (щоб було видно хто це)
+    // 🏷 Ім’я над сферою
     const label = makeTextSprite(name, "#ffffff");
     label.scale.set(1.4, 0.5, 1);
-    label.position.set(0, 1.0, 0);
+    label.position.set(0, 2.4, 0);
     group.add(label);
 
     scene.add(group);
-    p = { group, label, name, circle };
+
+    p = { group, label, name, bubble };
     remotePlayers.set(uid, p);
   } else if (p.name !== name) {
-    // якщо змінилося ім'я — оновлюємо напис
+    // якщо гравець змінив нік — оновлюємо текст
     p.group.remove(p.label);
     const newLabel = makeTextSprite(name, "#ffffff");
     newLabel.scale.set(1.4, 0.5, 1);
-    newLabel.position.set(0, 1.0, 0);
+    newLabel.position.set(0, 2.4, 0);
     p.group.add(newLabel);
     p.label = newLabel;
     p.name = name;
   }
+
   return p;
 }
 
