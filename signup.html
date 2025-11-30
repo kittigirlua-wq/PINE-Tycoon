@@ -1,108 +1,212 @@
 <!DOCTYPE html>
-<html lang="uk">
+<html lang="ук">
   <head>
     <meta charset="UTF-8" />
     <title>Sign up — PINE Tycoon</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <link rel="stylesheet" href="style.css">
+    <style>
+      body {
+        margin: 0;
+        font-family: Arial, sans-serif;
+        background: #f4f4f4;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+      }
+
+      .card {
+        background: #ffffff;
+        padding: 20px 24px;
+        border-radius: 12px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        max-width: 380px;
+        width: 100%;
+      }
+
+      h1 {
+        margin-top: 0;
+        text-align: center;
+      }
+
+      label {
+        display: block;
+        margin-top: 10px;
+        font-size: 14px;
+      }
+
+      input {
+        width: 100%;
+        padding: 8px 10px;
+        margin-top: 4px;
+        border-radius: 6px;
+        border: 1px solid #ccc;
+        font-size: 14px;
+      }
+
+      button {
+        width: 100%;
+        margin-top: 14px;
+        padding: 10px;
+        border-radius: 6px;
+        border: none;
+        background: #383837;
+        color: #fff;
+        font-size: 15px;
+        cursor: pointer;
+      }
+
+      button:hover {
+        opacity: 0.9;
+      }
+
+      .msg {
+        margin-top: 10px;
+        font-size: 13px;
+        min-height: 18px;
+      }
+
+      .msg.error {
+        color: #c00;
+      }
+
+      .msg.success {
+        color: #008800;
+      }
+
+      .back-link {
+        margin-top: 10px;
+        font-size: 13px;
+        text-align: center;
+      }
+
+      .back-link a {
+        color: #333;
+        text-decoration: none;
+      }
+
+      .back-link a:hover {
+        text-decoration: underline;
+      }
+    </style>
   </head>
 
   <body>
-    <header>
-      <div class="auth-buttons">
-        <a href="login.html" class="signin">Sign in</a>
-        <a href="signup.html" class="signup">Sign up</a>
+    <div class="card">
+      <h1>Реєстрація</h1>
+      <form id="signupForm">
+        <label>
+          Нікнейм
+          <input type="text" id="signupName" required />
+        </label>
+
+        <label>
+          Пароль
+          <input type="password" id="signupPassword" required />
+        </label>
+
+        <label>
+          Повтор паролю
+          <input type="password" id="signupPassword2" required />
+        </label>
+
+        <button type="submit">Створити акаунт</button>
+      </form>
+
+      <div id="signupMsg" class="msg"></div>
+
+      <div class="back-link">
+        Вже маєш акаунт? <a href="login.html">Sign in</a><br />
+        <a href="index.html">← Повернутися на головну</a>
       </div>
-    </header>
+    </div>
 
-    <main class="auth-page-main">
-      <div class="auth-card">
-        <h1>Sign up</h1>
-        <p>Створи свій акаунт для PINE Tycoon.</p>
+    <!-- Firebase: реєстрація -->
+    <script type="module">
+      import { initializeApp } from 'https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js';
+      import {
+        getAuth,
+        createUserWithEmailAndPassword,
+        updateProfile
+      } from 'https://www.gstatic.com/firebasejs/12.6.0/firebase-auth.js';
 
-        <form id="signupForm">
-          <label>
-            Ім’я
-            <input type="text" id="signupName" placeholder="Наприклад, Крутезний" required>
-          </label>
+      const firebaseConfig = {
+        apiKey: "AIzaSyDZEwAbFwLQXxlkkmuMKBFof2J3OE02Egs",
+        authDomain: "pine-tycoon.firebaseapp.com",
+        projectId: "pine-tycoon",
+        storageBucket: "pine-tycoon.firebasestorage.app",
+        messagingSenderId: "949986190236",
+        appId: "1:949986190236:web:4f5d50078326f5c1981e59",
+        measurementId: "G-2DY6KSY4G7"
+      };
 
-          <label>
-            Пароль
-            <input type="password" id="signupPassword" required>
-          </label>
+      const app  = initializeApp(firebaseConfig);
+      const auth = getAuth(app);
 
-          <label>
-            Повторіть пароль
-            <input type="password" id="signupPassword2" required>
-          </label>
+      const form      = document.getElementById('signupForm');
+      const nameInput = document.getElementById('signupName');
+      const passInput = document.getElementById('signupPassword');
+      const pass2Input= document.getElementById('signupPassword2');
+      const msgEl     = document.getElementById('signupMsg');
 
-          <button type="submit">Створити акаунт</button>
-        </form>
-
-        <p class="auth-note">
-          Вже маєш акаунт?
-          <a href="login.html">Sign in</a>
-        </p>
-      </div>
-    </main>
-
-    <footer>
-      © 2025 PINE Tycoon — бета-версія гри
-    </footer>
-
-    <script>
-      function getUsers() {
-        const raw = localStorage.getItem("pineUsers");
-        if (!raw) return {};
-        try {
-          const obj = JSON.parse(raw);
-          return obj && typeof obj === "object" ? obj : {};
-        } catch (e) {
-          return {};
-        }
-      }
-
-      function saveUsers(users) {
-        localStorage.setItem("pineUsers", JSON.stringify(users));
-      }
-
-      const signupForm = document.getElementById("signupForm");
-      const signupNameInput = document.getElementById("signupName");
-      const signupPassInput = document.getElementById("signupPassword");
-      const signupPass2Input = document.getElementById("signupPassword2");
-
-      signupForm.addEventListener("submit", function (e) {
+      form.addEventListener('submit', async (e) => {
         e.preventDefault();
-        const name = signupNameInput.value.trim();
-        const pass = signupPassInput.value;
-        const pass2 = signupPass2Input.value;
 
-        if (!name) return;
+        msgEl.textContent = '';
+        msgEl.className = 'msg';
+
+        const name = nameInput.value.trim();
+        const pass = passInput.value;
+        const pass2= pass2Input.value;
+
+        if (!name) {
+          msgEl.textContent = 'Введи нік.';
+          msgEl.classList.add('error');
+          return;
+        }
+
+        if (name.includes(' ')) {
+          msgEl.textContent = 'Нік не повинен містити пробілів.';
+          msgEl.classList.add('error');
+          return;
+        }
 
         if (pass.length < 4) {
-          alert("Пароль має бути хоча б 4 символи.");
+          msgEl.textContent = 'Пароль має бути хоча б 4 символи.';
+          msgEl.classList.add('error');
           return;
         }
 
         if (pass !== pass2) {
-          alert("Паролі не співпадають.");
+          msgEl.textContent = 'Паролі не співпадають.';
+          msgEl.classList.add('error');
           return;
         }
 
-        const users = getUsers();
+        // «Фейковий» email з ніку, щоб не просити справжній
+        const email = name + '@pine.local';
 
-        if (users[name]) {
-          alert("Таке ім’я вже зайняте в цьому браузері. Обери інше ім’я.");
-          return;
+        try {
+          const cred = await createUserWithEmailAndPassword(auth, email, pass);
+          await updateProfile(cred.user, { displayName: name });
+
+          msgEl.textContent = 'Акаунт створено! Переходимо на головну...';
+          msgEl.classList.add('success');
+
+          setTimeout(() => {
+            window.location.href = 'index.html';
+          }, 800);
+        } catch (err) {
+          console.error(err);
+          msgEl.classList.add('error');
+
+          if (err.code === 'auth/email-already-in-use') {
+            msgEl.textContent = 'Такий нік уже зайнятий.';
+          } else {
+            msgEl.textContent = 'Помилка реєстрації: ' + err.message;
+          }
         }
-
-        users[name] = { password: pass };
-        saveUsers(users);
-
-        localStorage.setItem("pineUserName", name);
-
-        window.location.href = "index.html";
       });
     </script>
   </body>
