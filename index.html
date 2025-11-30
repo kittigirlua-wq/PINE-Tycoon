@@ -5,11 +5,11 @@
     <title>PINE Tycoon</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <!-- Підключаємо твій CSS з анімаційними кнопками -->
+    <!-- Твій основний CSS з анімованими кнопками -->
     <link rel="stylesheet" href="style.css">
 
     <style>
-      /* Робимо сторінку на всю висоту + footer внизу */
+      /* Макет сторінки */
       html, body {
         height: 100%;
         margin: 0;
@@ -31,7 +31,14 @@
         padding: 20px;
       }
 
-      /* Блок з кнопками Sign in / Sign up / Log out у правому верхньому куті */
+      footer {
+        text-align: center;
+        padding: 10px;
+        background: #383837;
+        color: #fff;
+      }
+
+      /* Кнопки авторизації в правому верхньому куті */
       .auth-buttons {
         position: fixed;
         top: 10px;
@@ -96,6 +103,89 @@
         margin-bottom: 20px;
       }
 
+      /* Коментарі */
+      #commentsSection {
+        margin-top: 20px;
+        max-width: 600px;
+        background: #ffffff;
+        padding: 12px 16px;
+        border-radius: 10px;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+      }
+
+      #commentsSection h2 {
+        margin-top: 0;
+        font-size: 20px;
+      }
+
+      #commentsList {
+        margin-top: 8px;
+        margin-bottom: 10px;
+        max-height: 300px;
+        overflow-y: auto;
+      }
+
+      .comment {
+        padding: 6px 0;
+        border-bottom: 1px solid #e1e1e1;
+      }
+
+      .comment:last-child {
+        border-bottom: none;
+      }
+
+      .comment-author {
+        font-weight: 600;
+        font-size: 14px;
+      }
+
+      .comment-text {
+        font-size: 14px;
+        margin: 2px 0;
+      }
+
+      .comment-date {
+        font-size: 11px;
+        color: #777;
+      }
+
+      .comment-empty {
+        font-size: 14px;
+        color: #666;
+      }
+
+      #commentForm textarea {
+        width: 100%;
+        min-height: 60px;
+        resize: vertical;
+        padding: 6px 8px;
+        font-size: 14px;
+        border-radius: 6px;
+        border: 1px solid #ccc;
+        box-sizing: border-box;
+      }
+
+      #commentForm button {
+        margin-top: 6px;
+        padding: 6px 12px;
+        font-size: 14px;
+        border-radius: 4px;
+        border: none;
+        background: rgb(56,56,55);
+        color: #fff;
+        cursor: pointer;
+      }
+
+      #commentForm button:hover {
+        opacity: 0.9;
+      }
+
+      .comment-info {
+        font-size: 12px;
+        color: #555;
+        margin-top: 4px;
+      }
+
       /* Сніг (сині сніжинки) */
       .snowflake {
         position: fixed;
@@ -130,7 +220,7 @@
         <button id="logoutBtn" style="display:none;">Log out</button>
       </div>
 
-      <!-- Ліві анімаційні кнопки з твого style.css -->
+      <!-- Ліве анімоване меню з твого style.css -->
       <nav>
         <a href="game.html" class="about">Грати!</a>
         <a href="#blog" class="blog">Блог</a>
@@ -153,7 +243,7 @@
         </div>
       </div>
 
-      <!-- Основна картинка гри -->
+      <!-- Картинка гри -->
       <img
         src="https://learn.logikaschool.com/uploads/student/4796102/6929d42d4c366.png"
         alt="PINE Tycoon"
@@ -171,13 +261,31 @@
 
       <h1 id="blog">БЛОГ</h1>
       <p>Поки що тут пусто... але ми вже працюємо над новими оновленнями ❄</p>
+
+      <!-- СЕКЦІЯ КОМЕНТАРІВ -->
+      <section id="commentsSection">
+        <h2>Коментарі</h2>
+        <div id="commentsList">
+          <p class="comment-empty">Завантаження коментарів...</p>
+        </div>
+
+        <!-- Форму бачать тільки davyd3102 та 3102 -->
+        <form id="commentForm" style="display:none;">
+          <textarea id="commentText" placeholder="Напишіть оновлення про гру або думку..."></textarea>
+          <button type="submit">Надіслати коментар</button>
+        </form>
+
+        <p id="commentInfo" class="comment-info">
+          Увійдіть як davyd3102 або 3102, щоб писати коментарі.
+        </p>
+      </section>
     </main>
 
     <footer>
       © 2025 PINE Tycoon — бета-версія гри
     </footer>
 
-    <!-- Firebase: Welcome + аватар + кнопки входу/виходу -->
+    <!-- Firebase: Auth + Firestore (коментарі) -->
     <script type="module">
       import { initializeApp } from 'https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js';
       import {
@@ -185,6 +293,15 @@
         onAuthStateChanged,
         signOut
       } from 'https://www.gstatic.com/firebasejs/12.6.0/firebase-auth.js';
+      import {
+        getFirestore,
+        collection,
+        addDoc,
+        serverTimestamp,
+        query,
+        orderBy,
+        onSnapshot
+      } from 'https://www.gstatic.com/firebasejs/12.6.0/firebase-firestore.js';
 
       const firebaseConfig = {
         apiKey: "AIzaSyDZEwAbFwLQXxlkkmuMKBFof2J3OE02Egs",
@@ -198,6 +315,7 @@
 
       const app  = initializeApp(firebaseConfig);
       const auth = getAuth(app);
+      const db   = getFirestore(app);
 
       const welcomeText     = document.getElementById('welcomeText');
       const userNameDisplay = document.getElementById('userNameDisplay');
@@ -207,10 +325,19 @@
       const signupLink = document.getElementById('signupLink');
       const logoutBtn  = document.getElementById('logoutBtn');
 
+      const commentsList = document.getElementById('commentsList');
+      const commentForm  = document.getElementById('commentForm');
+      const commentText  = document.getElementById('commentText');
+      const commentInfo  = document.getElementById('commentInfo');
+
       const DEFAULT_AVATAR   = "https://learn.logikaschool.com/uploads/student/4796102/692acc8996fdc.png";
       const DAVYD3102_AVATAR = "https://learn.logikaschool.com/uploads/student/4796102/692acfc896c23.png";
       const EXTRA_AVATAR     = "https://learn.logikaschool.com/uploads/student/4796102/692b12eb74937.png";
       const GRIVIELD_AVATAR  = "https://learn.logikaschool.com/uploads/student/4796102/692b1a155937b.png";
+
+      const ALLOWED_COMMENTERS = ["davyd3102", "3102"];
+
+      let currentUserName = null;
 
       function getAvatarForName(name) {
         const map = {
@@ -223,18 +350,38 @@
         return map[name] || DEFAULT_AVATAR;
       }
 
+      function updateCommentUI() {
+        if (!commentForm || !commentInfo) return;
+
+        if (currentUserName && ALLOWED_COMMENTERS.includes(currentUserName)) {
+          commentForm.style.display = 'block';
+          commentInfo.textContent = "Ви можете писати коментарі як " + currentUserName + ".";
+        } else {
+          commentForm.style.display = 'none';
+          if (currentUserName) {
+            commentInfo.textContent = "Коментувати можуть тільки davyd3102 та 3102.";
+          } else {
+            commentInfo.textContent = "Увійдіть як davyd3102 або 3102, щоб писати коментарі.";
+          }
+        }
+      }
+
       // Слухаємо зміну стану авторизації
       onAuthStateChanged(auth, (user) => {
         if (user && user.displayName) {
           const name = user.displayName;
+          currentUserName = name;
+
           welcomeText.textContent      = "Welcome " + name;
           userNameDisplay.textContent  = name;
           avatarImg.src = getAvatarForName(name);
 
-          loginLink.style.display  = "inline-block";
+          loginLink.style.display  = "inline-block"; // щоб можна було перейти на інший акаунт
           signupLink.style.display = "none";
           logoutBtn.style.display  = "inline-block";
         } else {
+          currentUserName = null;
+
           welcomeText.textContent      = "Welcome Guest";
           userNameDisplay.textContent  = "Гість";
           avatarImg.src = DEFAULT_AVATAR;
@@ -243,6 +390,8 @@
           signupLink.style.display = "inline-block";
           logoutBtn.style.display  = "none";
         }
+
+        updateCommentUI();
       });
 
       // Вихід
@@ -254,6 +403,84 @@
           alert("Не вдалося вийти: " + err.message);
         }
       });
+
+      // --- Firestore: коментарі ---
+      const commentsCol  = collection(db, 'comments');
+      const commentsQ    = query(commentsCol, orderBy('createdAt', 'desc'));
+
+      function escapeHtml(str) {
+        return str.replace(/[&<>"']/g, (c) => ({
+          '&': '&amp;',
+          '<': '&lt;',
+          '>': '&gt;',
+          '"': '&quot;',
+          "'": '&#39;'
+        }[c] || c));
+      }
+
+      onSnapshot(commentsQ, (snapshot) => {
+        commentsList.innerHTML = '';
+
+        if (snapshot.empty) {
+          commentsList.innerHTML = '<p class="comment-empty">Поки що немає коментарів.</p>';
+          return;
+        }
+
+        snapshot.forEach((doc) => {
+          const data   = doc.data();
+          const text   = data.text || '';
+          const author = data.author || '??';
+          const time   = data.createdAt?.toDate ? data.createdAt.toDate() : null;
+
+          let timeStr = '';
+          if (time) {
+            timeStr = time.toLocaleString('uk-UA');
+          }
+
+          const div = document.createElement('div');
+          div.className = 'comment';
+          div.innerHTML = `
+            <div class="comment-author">${escapeHtml(author)}</div>
+            <div class="comment-text">${escapeHtml(text)}</div>
+            <div class="comment-date">${timeStr}</div>
+          `;
+          commentsList.appendChild(div);
+        });
+      }, (error) => {
+        console.error(error);
+        commentsList.innerHTML = '<p class="comment-empty">Не вдалося завантажити коментарі.</p>';
+      });
+
+      // Надсилання коментаря (тільки для дозволених нікнеймів)
+      if (commentForm) {
+        commentForm.addEventListener('submit', async (e) => {
+          e.preventDefault();
+
+          if (!currentUserName || !ALLOWED_COMMENTERS.includes(currentUserName)) {
+            alert("Коментувати можуть тільки davyd3102 та 3102.");
+            return;
+          }
+
+          const text = commentText.value.trim();
+          if (!text) return;
+
+          commentText.disabled = true;
+
+          try {
+            await addDoc(commentsCol, {
+              author: currentUserName,
+              text: text,
+              createdAt: serverTimestamp()
+            });
+            commentText.value = '';
+          } catch (err) {
+            console.error(err);
+            alert("Не вдалося надіслати коментар: " + err.message);
+          } finally {
+            commentText.disabled = false;
+          }
+        });
+      }
     </script>
 
     <!-- Снігопад -->
