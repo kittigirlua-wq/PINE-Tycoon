@@ -85,7 +85,7 @@
         background: #ffffff;
         box-shadow: 0 2px 6px rgba(0,0,0,0.08);
         margin-bottom: 20px;
-        max-width: 320px;
+        max-width: 340px;
       }
 
       .user-avatar {
@@ -376,7 +376,7 @@
           userNameDisplay.textContent  = name;
           avatarImg.src = getAvatarForName(name);
 
-          loginLink.style.display  = "inline-block"; // щоб можна було перейти на інший акаунт
+          loginLink.style.display  = "inline-block"; 
           signupLink.style.display = "none";
           logoutBtn.style.display  = "inline-block";
         } else {
@@ -418,38 +418,43 @@
         }[c] || c));
       }
 
-      onSnapshot(commentsQ, (snapshot) => {
-        commentsList.innerHTML = '';
+      // Слухаємо всі коментарі в реальному часі
+      onSnapshot(
+        commentsQ,
+        (snapshot) => {
+          commentsList.innerHTML = '';
 
-        if (snapshot.empty) {
-          commentsList.innerHTML = '<p class="comment-empty">Поки що немає коментарів.</p>';
-          return;
-        }
-
-        snapshot.forEach((doc) => {
-          const data   = doc.data();
-          const text   = data.text || '';
-          const author = data.author || '??';
-          const time   = data.createdAt?.toDate ? data.createdAt.toDate() : null;
-
-          let timeStr = '';
-          if (time) {
-            timeStr = time.toLocaleString('uk-UA');
+          if (snapshot.empty) {
+            commentsList.innerHTML = '<p class="comment-empty">Поки що немає коментарів.</p>';
+            return;
           }
 
-          const div = document.createElement('div');
-          div.className = 'comment';
-          div.innerHTML = `
-            <div class="comment-author">${escapeHtml(author)}</div>
-            <div class="comment-text">${escapeHtml(text)}</div>
-            <div class="comment-date">${timeStr}</div>
-          `;
-          commentsList.appendChild(div);
-        });
-      }, (error) => {
-        console.error(error);
-        commentsList.innerHTML = '<p class="comment-empty">Не вдалося завантажити коментарі.</p>';
-      });
+          snapshot.forEach((doc) => {
+            const data   = doc.data();
+            const text   = data.text || '';
+            const author = data.author || '??';
+            const time   = data.createdAt?.toDate ? data.createdAt.toDate() : null;
+
+            let timeStr = '';
+            if (time) {
+              timeStr = time.toLocaleString('uk-UA');
+            }
+
+            const div = document.createElement('div');
+            div.className = 'comment';
+            div.innerHTML = `
+              <div class="comment-author">${escapeHtml(author)}</div>
+              <div class="comment-text">${escapeHtml(text)}</div>
+              <div class="comment-date">${timeStr}</div>
+            `;
+            commentsList.appendChild(div);
+          });
+        },
+        (error) => {
+          console.error(error);
+          commentsList.innerHTML = '<p class="comment-empty">Не вдалося завантажити коментарі.</p>';
+        }
+      );
 
       // Надсилання коментаря (тільки для дозволених нікнеймів)
       if (commentForm) {
@@ -464,8 +469,6 @@
           const text = commentText.value.trim();
           if (!text) return;
 
-          commentText.disabled = true;
-
           try {
             await addDoc(commentsCol, {
               author: currentUserName,
@@ -476,8 +479,6 @@
           } catch (err) {
             console.error(err);
             alert("Не вдалося надіслати коментар: " + err.message);
-          } finally {
-            commentText.disabled = false;
           }
         });
       }
