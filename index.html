@@ -1,1404 +1,644 @@
 <!DOCTYPE html>
 <html lang="uk">
-  <head>
-    <meta charset="UTF-8" />
-    <title>PINE Tycoon</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
-    <!-- Якщо є додатковий CSS -->
-   
-
-    <style>
-      /* --- ТЕМИ (світла/темна) через CSS-змінні --- */
-      :root {
-        --bg-color: #f4f4f4;
-        --text-color: #000000;
-        --card-bg: #ffffff;
-        --footer-bg: #383837;
-        --button-bg: #ffffff;
-        --button-text: rgb(56, 56, 55);
-        --border-soft: #e1e1e1;
-      }
-
-      body.dark-theme {
-        --bg-color: rgb(69, 61, 61);
-        --text-color: #ffffff;
-        --card-bg: #4f4747;
-        --footer-bg: #201c1c;
-        --button-bg: transparent;
-        --button-text: #ffffff;
-        --border-soft: rgba(255, 255, 255, 0.18);
-      }
-
-      html,
-      body {
-        height: 100%;
-        margin: 0;
-      }
-
-      html {
-        scroll-behavior: smooth;
-      }
-
-      body {
-        display: flex;
-        flex-direction: column;
-        background: var(--bg-color);
-        color: var(--text-color);
-        font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
-          sans-serif;
-      }
-
-      header {
-        position: relative;
-        min-height: 56px;
-        padding: 8px 16px;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-      }
-
-      main {
-        flex: 1;
-        padding: 20px;
-      }
-
-      footer {
-        text-align: center;
-        padding: 10px;
-        background: var(--footer-bg);
-        color: #fff;
-      }
-
-      /* --- Анімації входу на сайт --- */
-      @keyframes fade-down {
-        0% {
-          opacity: 0;
-          transform: translateY(-16px);
-        }
-        100% {
-          opacity: 1;
-          transform: translateY(0);
-        }
-      }
-
-      @keyframes fade-up {
-        0% {
-          opacity: 0;
-          transform: translateY(16px);
-        }
-        100% {
-          opacity: 1;
-          transform: translateY(0);
-        }
-      }
-
-      @keyframes fade-scale {
-        0% {
-          opacity: 0;
-          transform: scale(0.95);
-        }
-        100% {
-          opacity: 1;
-          transform: scale(1);
-        }
-      }
-
-      .fade-down {
-        opacity: 0;
-        animation: fade-down 0.5s ease-out forwards;
-      }
-
-      .fade-up {
-        opacity: 0;
-        animation: fade-up 0.6s ease-out forwards;
-      }
-
-      .fade-scale {
-        opacity: 0;
-        animation: fade-scale 0.5s ease-out forwards;
-      }
-
-      .delay-1 {
-        animation-delay: 0.15s;
-      }
-      .delay-2 {
-        animation-delay: 0.3s;
-      }
-      .delay-3 {
-        animation-delay: 0.45s;
-      }
-
-      /* --- КНОПКИ --- */
-      .btn {
-        display: inline-block;
-        padding: 6px 14px;
-        font-size: 14px;
-        border-radius: 999px;
-        border: 1px solid var(--button-text);
-        background: var(--button-bg);
-        color: var(--button-text);
-        text-decoration: none;
-        cursor: pointer;
-        transform: scale(1);
-        transition:
-          transform 0.15s ease,
-          box-shadow 0.15s ease,
-          background 0.15s ease,
-          color 0.15s ease,
-          border-color 0.15s ease;
-      }
-
-      .btn:hover {
-        transform: scale(1.07);
-        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.18);
-      }
-
-      .main-nav {
-        display: flex;
-        gap: 8px;
-      }
-
-      .auth-buttons {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-      }
-
-      .welcome-text {
-        font-size: 18px;
-        margin-bottom: 10px;
-        font-weight: 600;
-      }
-
-      .user-panel {
-        display: flex;
-        align-items: center;
-        gap: 12px;
-        padding: 10px 14px;
-        border-radius: 10px;
-        background: var(--card-bg);
-        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
-        margin-bottom: 20px;
-        max-width: 340px;
-      }
-
-      .user-avatar {
-        width: 48px;
-        height: 48px;
-        border-radius: 50%;
-        object-fit: cover;
-      }
-
-      .user-avatar-wrapper,
-      .friend-avatar-wrapper {
-        position: relative;
-        display: inline-block;
-      }
-
-      .user-status-dot {
-        position: absolute;
-        right: -1px;
-        bottom: -1px;
-        width: 10px;
-        height: 10px;
-        border-radius: 50%;
-        background-color: #1bb31b;
-        border: 2px solid var(--card-bg);
-      }
-
-      /* --- ПОШУК КОРИСТУВАЧІВ + ДРУЗІ --- */
-      #userSearchSection {
-        margin-bottom: 24px;
-        max-width: 600px;
-        background: var(--card-bg);
-        padding: 12px 16px;
-        border-radius: 10px;
-        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
-      }
-
-      #userSearchSection h2 {
-        margin-top: 0;
-        font-size: 20px;
-      }
-
-      .user-search-box {
-        display: flex;
-        gap: 8px;
-        margin-bottom: 10px;
-      }
-
-      .user-search-box input {
-        flex: 1;
-        padding: 6px 10px;
-        border-radius: 999px;
-        border: 1px solid var(--border-soft);
-        font-size: 14px;
-        background: #fff;
-        color: #000;
-      }
-
-      body.dark-theme .user-search-box input {
-        background: #3c3636;
-        color: #fff;
-        border-color: #777;
-      }
-
-      .user-search-results {
-        min-height: 20px;
-      }
-
-      .user-result {
-        display: flex;
-        align-items: flex-start;
-        gap: 10px;
-        padding: 6px 0;
-        border-bottom: 1px solid var(--border-soft);
-      }
-
-      .user-result:last-child {
-        border-bottom: none;
-      }
-
-      .user-result-avatar {
-        width: 40px;
-        height: 40px;
-        border-radius: 50%;
-        object-fit: cover;
-      }
-
-      .user-result-info {
-        display: flex;
-        flex-direction: column;
-        gap: 2px;
-      }
-
-      .user-result-name {
-        font-weight: 600;
-        font-size: 14px;
-      }
-
-      .user-result-status {
-        font-size: 12px;
-      }
-
-      .user-result-status.online {
-        color: #1bb31b;
-      }
-
-      .user-result-status.offline {
-        color: #b39b1b;
-      }
-
-      .user-result-last {
-        font-size: 11px;
-        color: #777;
-      }
-
-      body.dark-theme .user-result-last {
-        color: #ddd;
-      }
-
-      .user-result-action {
-        margin-top: 4px;
-      }
-
-      .user-result-note {
-        font-size: 12px;
-        color: #666;
-      }
-
-      body.dark-theme .user-result-note {
-        color: #ddd;
-      }
-
-      #friendsBox,
-      #friendRequestsBox {
-        margin-top: 10px;
-        border-top: 1px solid var(--border-soft);
-        padding-top: 8px;
-      }
-
-      #friendsBox h3,
-      #friendRequestsBox h3 {
-        font-size: 16px;
-        margin: 4px 0 4px;
-      }
-
-      .friends-list .friend-item {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        padding: 4px 0;
-      }
-
-      .friend-avatar {
-        width: 32px;
-        height: 32px;
-        border-radius: 50%;
-        object-fit: cover;
-      }
-
-      .friend-name {
-        font-size: 14px;
-        font-weight: 500;
-      }
-
-      .friend-requests-title {
-        font-size: 13px;
-        font-weight: 600;
-        margin-top: 4px;
-        margin-bottom: 2px;
-      }
-
-      .friend-requests-row {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        gap: 8px;
-        padding: 4px 0;
-      }
-
-      .friend-requests-text {
-        font-size: 14px;
-      }
-
-      .friend-requests-actions {
-        display: flex;
-        gap: 6px;
-        flex-shrink: 0;
-      }
-
-      /* --- КОМЕНТАРІ --- */
-      #commentsSection {
-        margin-top: 20px;
-        max-width: 600px;
-        background: var(--card-bg);
-        padding: 12px 16px;
-        border-radius: 10px;
-        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
-      }
-
-      #commentsSection h2 {
-        margin-top: 0;
-        font-size: 20px;
-      }
-
-      #commentsList {
-        margin-top: 8px;
-        margin-bottom: 10px;
-        max-height: 300px;
-        overflow-y: auto;
-      }
-
-      .comment {
-        padding: 6px 0;
-        border-bottom: 1px solid var(--border-soft);
-      }
-
-      .comment:last-child {
-        border-bottom: none;
-      }
-
-      .comment-author {
-        font-weight: 600;
-        font-size: 14px;
-      }
-
-      .comment-text {
-        font-size: 14px;
-        margin: 2px 0;
-      }
-
-      .comment-date {
-        font-size: 11px;
-        color: #777;
-      }
-
-      body.dark-theme .comment-date {
-        color: #ccc;
-      }
-
-      .comment-empty {
-        font-size: 14px;
-        color: #666;
-      }
-
-      body.dark-theme .comment-empty {
-        color: #ddd;
-      }
-
-      #commentForm textarea {
-        width: 100%;
-        min-height: 60px;
-        resize: vertical;
-        padding: 6px 8px;
-        font-size: 14px;
-        border-radius: 6px;
-        border: 1px solid #ccc;
-        box-sizing: border-box;
-        background: #fff;
-        color: #000;
-      }
-
-      body.dark-theme #commentForm textarea {
-        background: #3c3636;
-        color: #fff;
-        border-color: #777;
-      }
-
-      #commentForm button {
-        margin-top: 6px;
-      }
-
-      .comment-info {
-        font-size: 12px;
-        color: #555;
-        margin-top: 4px;
-      }
-
-      body.dark-theme .comment-info {
-        color: #ddd;
-      }
-
-      /* --- КАРТИНКА ГРИ --- */
-      .main-logo {
-        max-width: 60%;
-        border-radius: 20px;
-        display: block;
-        margin-bottom: 20px;
-      }
-
-      /* --- КНОПКА ТЕМИ --- */
-      .theme-toggle {
-        position: fixed;
-        right: 16px;
-        bottom: 16px;
-        width: 44px;
-        height: 44px;
-        border-radius: 50%;
-        border: 1px solid var(--button-text);
-        background: var(--card-bg);
-        color: var(--button-text);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        cursor: pointer;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
-        z-index: 1100;
-        font-size: 20px;
-        transition:
-          transform 0.15s ease,
-          box-shadow 0.15s ease,
-          background 0.15s ease,
-          color 0.15s ease,
-          border-color 0.15s ease;
-      }
-
-      .theme-toggle:hover {
-        transform: scale(1.08);
-        box-shadow: 0 3px 10px rgba(0, 0, 0, 0.35);
-      }
-
-      /* --- Сніг (сині сніжинки) --- */
-      .snowflake {
-        position: fixed;
-        top: -10px;
-        color: #66c7ff;
-        font-size: 14px;
-        pointer-events: none;
-        z-index: 200;
-        animation-name: snow-fall;
-        animation-timing-function: linear;
-        animation-iteration-count: 1;
-        text-shadow: 0 0 4px rgba(0, 0, 0, 0.35);
-      }
-
-      @keyframes snow-fall {
-        0% {
-          transform: translateY(-10vh);
-        }
-        100% {
-          transform: translateY(110vh);
-        }
-      }
-
-      /* Перекриваємо старі стилі nav a з style.css, якщо були */
-      nav a {
-        position: static;
-        left: auto;
-      }
-    </style>
-  </head>
-
-  <body>
-    <!-- header з анімацією зверху -->
-    <header class="fade-down">
-      <nav class="main-nav">
-        <a href="game.html" class="btn">Грати!</a>
-        <a href="#blog" class="btn">Блог</a>
-      </nav>
-
-      <div class="auth-buttons">
-        <a href="login.html" id="loginLink" class="btn">Sign in</a>
-        <a href="signup.html" id="signupLink" class="btn">Sign up</a>
-        <button id="logoutBtn" class="btn" style="display: none">Log out</button>
-      </div>
-    </header>
-
-    <main>
-      <p class="welcome-text fade-up delay-1" id="welcomeText">
-        Welcome Guest
-      </p>
-
-      <div class="user-panel fade-scale delay-1">
-        <div class="user-avatar-wrapper">
-          <img
-            src="https://learn.logikaschool.com/uploads/student/4796102/692acc8996fdc.png"
-            alt="Аватар"
-            class="user-avatar"
-          />
-        </div>
-        <div>
-          <div><strong>Акаунт:</strong></div>
-          <div id="userNameDisplay">Гість</div>
-        </div>
+<head>
+  <meta charset="UTF-8" />
+  <title>PINE Tycoon – Головна</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <style>
+    :root {
+      --bg: #f4f4f4;
+      --text: #222;
+      --card-bg: #ffffff;
+      --accent: #383837;
+    }
+
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: var(--bg);
+      color: var(--text);
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 20px;
+      background: #383837;
+      color: #fff;
+    }
+
+    .logo {
+      font-weight: 700;
+      letter-spacing: 1px;
+    }
+
+    nav {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+
+    nav a {
+      text-decoration: none;
+      color: #fff;
+      padding: 6px 12px;
+      border-radius: 6px;
+      background: rgba(255,255,255,0.08);
+      transition: transform 0.15s, background 0.15s;
+      font-size: 14px;
+    }
+
+    nav a:hover {
+      background: rgba(255,255,255,0.2);
+      transform: scale(1.03);
+    }
+
+    .auth-buttons button {
+      border: none;
+      padding: 6px 12px;
+      border-radius: 6px;
+      margin-left: 6px;
+      cursor: pointer;
+      font-size: 14px;
+      background: #ffffff;
+      color: #383837;
+      transition: transform 0.15s, background 0.15s;
+    }
+
+    .auth-buttons button:hover {
+      background: #f1f1f1;
+      transform: scale(1.03);
+    }
+
+    main {
+      max-width: 900px;
+      margin: 30px auto;
+      padding: 0 15px 30px;
+    }
+
+    .card {
+      background: var(--card-bg);
+      border-radius: 12px;
+      padding: 16px 20px;
+      margin-bottom: 16px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+    }
+
+    .hero {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .hero img {
+      max-width: 260px;
+      border-radius: 12px;
+      border: 3px solid #383837;
+    }
+
+    .hero-top {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+      align-items: center;
+    }
+
+    .hero-text h1 {
+      margin: 0 0 8px;
+      font-size: 26px;
+      color: #383837;
+    }
+
+    .hero-text p {
+      margin: 4px 0;
+    }
+
+    .status-box {
+      font-size: 14px;
+      color: #555;
+    }
+
+    .blog-section h2 {
+      margin-top: 0;
+      margin-bottom: 8px;
+    }
+
+    .blog-section p {
+      margin-top: 4px;
+    }
+
+    .auth-forms {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+
+    form {
+      flex: 1;
+      min-width: 250px;
+    }
+
+    form h3 {
+      margin-top: 0;
+      margin-bottom: 8px;
+    }
+
+    label {
+      display: block;
+      font-size: 13px;
+      margin-top: 6px;
+    }
+
+    input[type="text"],
+    input[type="email"],
+    input[type="password"] {
+      width: 100%;
+      box-sizing: border-box;
+      margin-top: 2px;
+      padding: 6px 8px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 14px;
+    }
+
+    form button[type="submit"] {
+      margin-top: 10px;
+      padding: 7px 12px;
+      border-radius: 6px;
+      border: none;
+      background: #383837;
+      color: #fff;
+      cursor: pointer;
+      font-size: 14px;
+      transition: background 0.15s, transform 0.15s;
+    }
+
+    form button[type="submit"]:hover {
+      background: #222;
+      transform: scale(1.02);
+    }
+
+    .small-text {
+      font-size: 12px;
+      color: #777;
+      margin-top: 4px;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    .user-info {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .avatar {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      background-size: cover;
+      background-position: center;
+      border: 2px solid #383837;
+    }
+
+    .user-name {
+      font-weight: 600;
+    }
+
+    #logoutBtn {
+      border-radius: 6px;
+      border: none;
+      padding: 6px 10px;
+      cursor: pointer;
+      background: #e74c3c;
+      color: #fff;
+      font-size: 13px;
+    }
+
+    #logoutBtn:hover {
+      background: #c0392b;
+    }
+
+    /* Admin panel */
+
+    #adminPanel {
+      margin-top: 16px;
+      padding: 10px 12px;
+      border-radius: 10px;
+      border: 1px solid #e57373;
+      background: #ffebee;
+      font-size: 14px;
+    }
+
+    #adminPanel h3 {
+      margin-top: 0;
+      margin-bottom: 6px;
+      color: #c62828;
+    }
+
+    #deleteUserInput {
+      width: 100%;
+      box-sizing: border-box;
+      margin-top: 4px;
+      padding: 6px 8px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+    }
+
+    #deleteUserBtn {
+      margin-top: 8px;
+      padding: 6px 10px;
+      border-radius: 6px;
+      border: none;
+      background: #e53935;
+      color: #fff;
+      font-size: 14px;
+      cursor: pointer;
+    }
+
+    #deleteUserBtn:hover {
+      background: #c62828;
+    }
+
+    #deleteUserStatus {
+      margin-top: 6px;
+      font-size: 13px;
+    }
+
+    footer {
+      text-align: center;
+      padding: 12px 10px;
+      background: #383837;
+      color: #fff;
+      font-size: 13px;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="logo">PINE Tycoon</div>
+    <nav>
+      <a href="index.html">Головна</a>
+      <a href="game.html">Грати!</a>
+      <a href="#blog">Блог</a>
+
+      <div class="auth-buttons" id="authButtons">
+        <button id="showAuthBtn">Sign in / Sign up</button>
       </div>
 
-      <!-- ПОШУК + ДРУЗІ -->
-      <section id="userSearchSection" class="fade-up delay-2">
-        <h2>Пошук гравців</h2>
-        <div class="user-search-box">
-          <input
-            type="text"
-            id="userSearchInput"
-            placeholder="Введіть нікнейм..."
-          />
-          <button id="userSearchBtn" class="btn">Знайти</button>
-        </div>
-        <div id="userSearchResults" class="user-search-results">
-          <p class="comment-empty">Введіть нік, щоб знайти гравця.</p>
-        </div>
+      <div class="user-info hidden" id="userInfo">
+        <div class="avatar" id="userAvatar"></div>
+        <span class="user-name" id="userName"></span>
+        <button id="logoutBtn">Вийти</button>
+      </div>
+    </nav>
+  </header>
 
-        <div id="friendsBox">
-          <h3>Твої друзі</h3>
-          <div id="friendsList" class="friends-list">
-            <p class="comment-empty">Увійдіть, щоб бачити друзів.</p>
+  <main>
+    <!-- Головний блок про гру -->
+    <section class="card hero">
+      <div class="hero-top">
+        <img
+          src="https://learn.logikaschool.com/uploads/student/4796102/6929d42d4c366.png"
+          alt="PINE Tycoon лого"
+        />
+        <div class="hero-text">
+          <h1>PINE Tycoon</h1>
+          <p>
+            Ласкаво просимо до зимового тайкуна, де ви рубаєте дерева, будуєте
+            дерев’яне село та намагаєтесь не замерзнути в заметілі 🌨️
+          </p>
+          <p class="status-box">
+            Поточна версія: <b>1.0 – мультиплеєрна альфа</b><br />
+            Додано: систему акаунтів, синхронізацію гравців та базовий мультиплеєр.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Блок для реєстрації / входу -->
+    <section class="card" id="authCard">
+      <h2>Акаунт</h2>
+      <p class="small-text">
+        Створи акаунт, щоб грати під своїм ім’ям у мультиплеєрі, а також у майбутньому залишати коментарі, додавати друзів тощо.
+      </p>
+
+      <div class="auth-forms">
+        <!-- Реєстрація -->
+        <form id="signupForm">
+          <h3>Реєстрація</h3>
+          <label>
+            Нікнейм (буде видно у грі)
+            <input type="text" id="signupName" required />
+          </label>
+          <label>
+            Email
+            <input type="email" id="signupEmail" required />
+          </label>
+          <label>
+            Пароль
+            <input type="password" id="signupPassword" required />
+          </label>
+          <button type="submit">Створити акаунт</button>
+          <div class="small-text">
+            Порада: використай свій існуючий нік, наприклад <b>davyd3102</b>.
           </div>
-        </div>
-
-        <div id="friendRequestsBox">
-          <h3>Запити в друзі</h3>
-          <div id="friendRequestsList">
-            <p class="comment-empty">Немає запитів.</p>
-          </div>
-        </div>
-      </section>
-
-      <!-- Картинка гри -->
-      <img
-        src="https://learn.logikaschool.com/uploads/student/4796102/6929d42d4c366.png"
-        alt="PINE Tycoon"
-        class="main-logo fade-up delay-2"
-      />
-
-      <p class="inf fade-up delay-2"></p>
-      <p class="fade-up delay-2">
-        Ласкаво просимо до затишного місця "PINE Tycoon". У цій грі вам потрібно
-        рубати дрова та будувати своє власне затишне село!
-      </p>
-      <p class="fade-up delay-2">
-        Ця версія гри не фінальна, тому може бути багато багів і гра може
-        змінитися з часом.
-      </p>
-
-      <h1 id="blog" class="fade-up delay-2">БЛОГ</h1>
-      <p class="fade-up delay-2">
-        Поки що тут пусто... але ми вже працюємо над новими оновленнями ❄
-      </p>
-      <p class="fade-up delay-2">
-        Оновлення: додано систему акаунтів, друзів, пошук гравців та коментарі
-        для авторів гри.
-      </p>
-
-      <!-- КОМЕНТАРІ -->
-      <section id="commentsSection" class="fade-up delay-3">
-        <h2>Коментарі</h2>
-        <div id="commentsList">
-          <p class="comment-empty">Завантаження коментарів...</p>
-        </div>
-
-        <form id="commentForm" style="display: none">
-          <textarea
-            id="commentText"
-            placeholder="Напишіть оновлення про гру або думку..."
-          ></textarea>
-          <button type="submit" class="btn">Надіслати коментар</button>
+          <div id="signupStatus" class="small-text"></div>
         </form>
 
-        <p id="commentInfo" class="comment-info">
-          Увійдіть як davyd3102 або 3102, щоб писати коментарі.
+        <!-- Вхід -->
+        <form id="loginForm">
+          <h3>Вхід</h3>
+          <label>
+            Email
+            <input type="email" id="loginEmail" required />
+          </label>
+          <label>
+            Пароль
+            <input type="password" id="loginPassword" required />
+          </label>
+          <button type="submit">Увійти</button>
+          <div id="loginStatus" class="small-text"></div>
+        </form>
+      </div>
+    </section>
+
+    <!-- Блок для залогіненого користувача + адмін-панель -->
+    <section class="card hidden" id="loggedCard">
+      <h2>Привіт, <span id="welcomeName">гравцю</span>!</h2>
+      <p>
+        Ти увійшов у систему. Тепер, коли ти запускаєш гру
+        через кнопку <b>Грати!</b>, мультиплеєр зможе розпізнати твоє ім’я.
+      </p>
+
+      <!-- Адмін-панель лише для davyd3102 -->
+      <div id="adminPanel" class="hidden">
+        <h3>Admin панель (тільки для davyd3102)</h3>
+        <p class="small-text">
+          Тут ти можеш видалити користувача з колекції <b>users</b> та <b>gamePlayers</b>.
+          Це ніби "бан" – профіль зникне з сайту та з мультиплеєра.
         </p>
-      </section>
-    </main>
 
-    <footer>© 2025 PINE Tycoon — бета-версія гри</footer>
+        <label>
+          Ім’я користувача для видалення:
+          <input id="deleteUserInput" type="text" placeholder="Наприклад: 3102" />
+        </label>
 
-    <!-- Кнопка теми -->
-    <button id="themeToggle" class="theme-toggle" title="Перемкнути тему">
-      ⚙
-    </button>
+        <button id="deleteUserBtn">Видалити користувача</button>
+        <div id="deleteUserStatus"></div>
+      </div>
+    </section>
 
-    <!-- Firebase + логіка -->
-    <script type="module">
-      import { initializeApp } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js";
-      import {
-        getAuth,
-        onAuthStateChanged,
-        signOut,
-      } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-auth.js";
-      import {
-        getFirestore,
-        collection,
-        addDoc,
-        serverTimestamp,
-        query,
-        orderBy,
-        onSnapshot,
-        setDoc,
-        doc,
-        deleteDoc,
-      } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-firestore.js";
+    <!-- Блог -->
+    <section class="card blog-section" id="blog">
+      <h2>Блог</h2>
+      <p><i>Останнє оновлення:</i></p>
+      <ul>
+        <li>Додано систему акаунтів на Firebase.</li>
+        <li>Підключено мультиплеєр між гравцями (перша альфа).</li>
+        <li>Підготовлено адмін-панель для <b>davyd3102</b> ✨</li>
+      </ul>
+      <p>Незабаром тут з’являться нотатки про розробку, зміни балансу та нові будівлі.</p>
+    </section>
+  </main>
 
-      const firebaseConfig = {
-        apiKey: "AIzaSyDZEwAbFwLQXxlkkmuMKBFof2J3OE02Egs",
-        authDomain: "pine-tycoon.firebaseapp.com",
-        projectId: "pine-tycoon",
-        storageBucket: "pine-tycoon.firebasestorage.app",
-        messagingSenderId: "949986190236",
-        appId: "1:949986190236:web:4f5d50078326f5c1981e59",
-        measurementId: "G-2DY6KSY4G7",
-      };
+  <footer>
+    © 2025 PINE Tycoon — бета-версія гри з мультиплеєром
+  </footer>
 
-      const app = initializeApp(firebaseConfig);
-      const auth = getAuth(app);
-      const db = getFirestore(app);
+  <!-- Firebase + логіка акаунтів і адмін-панелі -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js";
+    import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-analytics.js";
+    import {
+      getAuth,
+      onAuthStateChanged,
+      createUserWithEmailAndPassword,
+      signInWithEmailAndPassword,
+      signOut,
+      updateProfile
+    } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-auth.js";
+    import {
+      getFirestore,
+      collection,
+      doc,
+      setDoc,
+      getDocs,
+      query,
+      where,
+      deleteDoc,
+      serverTimestamp
+    } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-firestore.js";
 
-      const welcomeText = document.getElementById("welcomeText");
-      const userNameDisplay = document.getElementById("userNameDisplay");
-      const avatarImg = document.querySelector(".user-avatar");
+    // 🔧 ТВОЯ конфігурація (та сама, що й у грі)
+    const firebaseConfig = {
+      apiKey: "AIzaSyDZEwAbFwLQXxlkkmuMKBFof2J3OE02Egs",
+      authDomain: "pine-tycoon.firebaseapp.com",
+      projectId: "pine-tycoon",
+      storageBucket: "pine-tycoon.firebasestorage.app",
+      messagingSenderId: "949986190236",
+      appId: "1:949986190236:web:4f5d50078326f5c1981e59",
+      measurementId: "G-2DY6KSY4G7"
+    };
 
-      const loginLink = document.getElementById("loginLink");
-      const signupLink = document.getElementById("signupLink");
-      const logoutBtn = document.getElementById("logoutBtn");
+    const app = initializeApp(firebaseConfig);
+    const analytics = getAnalytics(app);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
 
-      const commentsList = document.getElementById("commentsList");
-      const commentForm = document.getElementById("commentForm");
-      const commentText = document.getElementById("commentText");
-      const commentInfo = document.getElementById("commentInfo");
+    // DOM-елементи
+    const authCard     = document.getElementById("authCard");
+    const loggedCard   = document.getElementById("loggedCard");
+    const welcomeName  = document.getElementById("welcomeName");
 
-      const themeToggleBtn = document.getElementById("themeToggle");
+    const signupForm   = document.getElementById("signupForm");
+    const signupName   = document.getElementById("signupName");
+    const signupEmail  = document.getElementById("signupEmail");
+    const signupPass   = document.getElementById("signupPassword");
+    const signupStatus = document.getElementById("signupStatus");
 
-      const userSearchInput = document.getElementById("userSearchInput");
-      const userSearchBtn = document.getElementById("userSearchBtn");
-      const userSearchResults = document.getElementById("userSearchResults");
+    const loginForm    = document.getElementById("loginForm");
+    const loginEmail   = document.getElementById("loginEmail");
+    const loginPass    = document.getElementById("loginPassword");
+    const loginStatus  = document.getElementById("loginStatus");
 
-      const friendsListDiv = document.getElementById("friendsList");
-      const friendRequestsListDiv =
-        document.getElementById("friendRequestsList");
+    const authButtons  = document.getElementById("authButtons");
+    const showAuthBtn  = document.getElementById("showAuthBtn");
+    const userInfo     = document.getElementById("userInfo");
+    const userAvatar   = document.getElementById("userAvatar");
+    const userNameEl   = document.getElementById("userName");
+    const logoutBtn    = document.getElementById("logoutBtn");
 
-      const DEFAULT_AVATAR =
-        "https://learn.logikaschool.com/uploads/student/4796102/692acc8996fdc.png";
-      const DAVYD3102_AVATAR =
-        "https://learn.logikaschool.com/uploads/student/4796102/692acfc896c23.png";
-      const EXTRA_AVATAR =
-        "https://learn.logikaschool.com/uploads/student/4796102/692b12eb74937.png";
-      const GRIVIELD_AVATAR =
-        "https://learn.logikaschool.com/uploads/student/4796102/692b1a155937b.png";
+    const adminPanel       = document.getElementById("adminPanel");
+    const deleteUserInput  = document.getElementById("deleteUserInput");
+    const deleteUserBtn    = document.getElementById("deleteUserBtn");
+    const deleteUserStatus = document.getElementById("deleteUserStatus");
 
-      const ALLOWED_COMMENTERS = ["davyd3102", "3102"];
-      const ONLINE_TIMEOUT_MS = 2 * 60 * 1000; // 2 хвилини
-
-      let currentUserName = null;
-      let currentUserUid = null;
-
-      let usersCache = [];
-      let friendsList = [];
-      let friendRequestsIncoming = [];
-      let friendRequestsOutgoing = [];
-
-      let presenceInterval = null;
-      let friendsUnsub = null;
-      let friendReqUnsub = null;
-
-      const usersCol = collection(db, "users");
-      const commentsCol = collection(db, "comments");
-      const commentsQ = query(commentsCol, orderBy("createdAt", "desc"));
-      const friendRequestsCol = collection(db, "friendRequests");
-
-      function getAvatarForName(name) {
-        const map = {
-          davyd3102: DAVYD3102_AVATAR,
-          "3102": EXTRA_AVATAR,
-          "Cool dave": EXTRA_AVATAR,
-          davyd: EXTRA_AVATAR,
-          Grivield: GRIVIELD_AVATAR,
-        };
-        return map[name] || DEFAULT_AVATAR;
-      }
-
-      function escapeHtml(str) {
-        return String(str).replace(/[&<>"']/g, (c) => {
-          return (
-            {
-              "&": "&amp;",
-              "<": "&lt;",
-              ">": "&gt;",
-              '"': "&quot;",
-              "'": "&#39;",
-            }[c] || c
-          );
-        });
-      }
-
-      function updateCommentUI() {
-        if (!commentForm || !commentInfo) return;
-
-        if (currentUserName && ALLOWED_COMMENTERS.includes(currentUserName)) {
-          commentForm.style.display = "block";
-          commentInfo.textContent =
-            "Ви можете писати коментарі як " + currentUserName + ".";
+    // 🔹 Показати/сховати блок авторизації по кнопці в хедері
+    if (showAuthBtn) {
+      showAuthBtn.addEventListener("click", () => {
+        if (authCard.classList.contains("hidden")) {
+          authCard.classList.remove("hidden");
         } else {
-          commentForm.style.display = "none";
-          if (currentUserName) {
-            commentInfo.textContent =
-              "Коментувати можуть тільки davyd3102 та 3102.";
-          } else {
-            commentInfo.textContent =
-              "Увійдіть як davyd3102 або 3102, щоб писати коментарі.";
-          }
+          authCard.classList.add("hidden");
         }
-      }
-
-      async function touchUserPresence(uid, name) {
-        try {
-          const avatar = getAvatarForName(name);
-          await setDoc(
-            doc(db, "users", uid),
-            {
-              name: name,
-              avatar: avatar,
-              lastActive: serverTimestamp(),
-            },
-            { merge: true }
-          );
-        } catch (err) {
-          console.error("Помилка оновлення присутності:", err);
-        }
-      }
-
-      function startPresenceUpdater(uid, name) {
-        if (!uid || !name) return;
-        if (presenceInterval) clearInterval(presenceInterval);
-
-        touchUserPresence(uid, name);
-        presenceInterval = setInterval(() => {
-          touchUserPresence(uid, name);
-        }, 60000);
-      }
-
-      function stopPresenceUpdater() {
-        if (presenceInterval) {
-          clearInterval(presenceInterval);
-          presenceInterval = null;
-        }
-      }
-
-      function renderFriends() {
-        if (!friendsListDiv) return;
-        friendsListDiv.innerHTML = "";
-
-        if (!currentUserUid) {
-          friendsListDiv.innerHTML =
-            '<p class="comment-empty">Увійдіть, щоб бачити друзів.</p>';
-          return;
-        }
-
-        if (!friendsList.length) {
-          friendsListDiv.innerHTML =
-            '<p class="comment-empty">Поки що немає друзів.</p>';
-          return;
-        }
-
-        const now = new Date();
-
-        friendsList.forEach((f) => {
-          const item = document.createElement("div");
-          item.className = "friend-item";
-
-          const avatar = document.createElement("img");
-          avatar.className = "friend-avatar";
-          avatar.src = f.friendAvatar || getAvatarForName(f.friendName || "");
-
-          const wrapper = document.createElement("div");
-          wrapper.className = "friend-avatar-wrapper";
-          wrapper.appendChild(avatar);
-
-          let isOnline = false;
-          const userData = usersCache.find((u) => u.id === f.friendUid);
-          if (userData && userData.lastActive?.toDate) {
-            const last = userData.lastActive.toDate();
-            if (now - last < ONLINE_TIMEOUT_MS) {
-              isOnline = true;
-            }
-          }
-
-          if (isOnline) {
-            const dot = document.createElement("div");
-            dot.className = "user-status-dot";
-            wrapper.appendChild(dot);
-          }
-
-          const nameSpan = document.createElement("span");
-          nameSpan.className = "friend-name";
-          nameSpan.textContent = f.friendName || "";
-
-          item.appendChild(wrapper);
-          item.appendChild(nameSpan);
-          friendsListDiv.appendChild(item);
-        });
-      }
-
-      function renderFriendRequests() {
-        if (!friendRequestsListDiv) return;
-        friendRequestsListDiv.innerHTML = "";
-
-        if (!currentUserUid) {
-          friendRequestsListDiv.innerHTML =
-            '<p class="comment-empty">Увійдіть, щоб бачити запити.</p>';
-          return;
-        }
-
-        if (!friendRequestsIncoming.length && !friendRequestsOutgoing.length) {
-          friendRequestsListDiv.innerHTML =
-            '<p class="comment-empty">Немає запитів.</p>';
-          return;
-        }
-
-        if (friendRequestsIncoming.length) {
-          const title = document.createElement("div");
-          title.className = "friend-requests-title";
-          title.textContent = "Вхідні запити:";
-          friendRequestsListDiv.appendChild(title);
-
-          friendRequestsIncoming.forEach((req) => {
-            const row = document.createElement("div");
-            row.className = "friend-requests-row";
-
-            const text = document.createElement("div");
-            text.className = "friend-requests-text";
-            text.textContent = `${req.fromName || "Гравець"} хоче додати вас у друзі`;
-
-            const actions = document.createElement("div");
-            actions.className = "friend-requests-actions";
-
-            const acceptBtn = document.createElement("button");
-            acceptBtn.className = "btn";
-            acceptBtn.textContent = "Прийняти";
-            acceptBtn.addEventListener("click", () => handleAcceptRequest(req));
-
-            const declineBtn = document.createElement("button");
-            declineBtn.className = "btn";
-            declineBtn.textContent = "Відхилити";
-            declineBtn.addEventListener("click", () => handleDeclineRequest(req));
-
-            actions.appendChild(acceptBtn);
-            actions.appendChild(declineBtn);
-
-            row.appendChild(text);
-            row.appendChild(actions);
-            friendRequestsListDiv.appendChild(row);
-          });
-        }
-
-        if (friendRequestsOutgoing.length) {
-          const title2 = document.createElement("div");
-          title2.className = "friend-requests-title";
-          title2.textContent = "Надіслані запити:";
-          friendRequestsListDiv.appendChild(title2);
-
-          friendRequestsOutgoing.forEach((req) => {
-            const row = document.createElement("div");
-            row.className = "friend-requests-row";
-
-            const text = document.createElement("div");
-            text.className = "friend-requests-text";
-            text.textContent = `Запит до ${req.toName || "гравця"} (очікує)`;
-
-            row.appendChild(text);
-            friendRequestsListDiv.appendChild(row);
-          });
-        }
-      }
-
-      function subscribeFriendsFor(uid) {
-        if (friendsUnsub) {
-          friendsUnsub();
-          friendsUnsub = null;
-        }
-        friendsList = [];
-        renderFriends();
-
-        if (!uid) return;
-
-        const friendsColRef = collection(db, "users", uid, "friends");
-        friendsUnsub = onSnapshot(
-          friendsColRef,
-          (snapshot) => {
-            friendsList = snapshot.docs.map((d) => ({
-              id: d.id,
-              ...d.data(),
-            }));
-            renderFriends();
-            const term = userSearchInput.value.trim();
-            if (term) renderUserResults(term);
-          },
-          (error) => {
-            console.error("Помилка завантаження друзів:", error);
-            friendsListDiv.innerHTML =
-              '<p class="comment-empty">Не вдалося завантажити друзів.</p>';
-          }
-        );
-      }
-
-      function subscribeFriendRequestsFor(uid) {
-        if (friendReqUnsub) {
-          friendReqUnsub();
-          friendReqUnsub = null;
-        }
-        friendRequestsIncoming = [];
-        friendRequestsOutgoing = [];
-        renderFriendRequests();
-
-        if (!uid) return;
-
-        friendReqUnsub = onSnapshot(
-          friendRequestsCol,
-          (snapshot) => {
-            friendRequestsIncoming = [];
-            friendRequestsOutgoing = [];
-
-            snapshot.forEach((docSnap) => {
-              const data = docSnap.data();
-              if (!data || data.status !== "pending") return;
-              if (data.toUid === uid) {
-                friendRequestsIncoming.push({ id: docSnap.id, ...data });
-              }
-              if (data.fromUid === uid) {
-                friendRequestsOutgoing.push({ id: docSnap.id, ...data });
-              }
-            });
-
-            renderFriendRequests();
-            const term = userSearchInput.value.trim();
-            if (term) renderUserResults(term);
-          },
-          (error) => {
-            console.error("Помилка завантаження friendRequests:", error);
-          }
-        );
-      }
-
-      async function handleAcceptRequest(req) {
-        if (!currentUserUid || !currentUserName) return;
-        try {
-          const fromUid = req.fromUid;
-          const fromName = req.fromName || "??";
-          const myUid = currentUserUid;
-          const myName = currentUserName;
-
-          const myFriendRef = doc(db, "users", myUid, "friends", fromUid);
-          const theirFriendRef = doc(db, "users", fromUid, "friends", myUid);
-
-          await Promise.all([
-            setDoc(myFriendRef, {
-              friendUid: fromUid,
-              friendName: fromName,
-              friendAvatar: getAvatarForName(fromName),
-              createdAt: serverTimestamp(),
-            }),
-            setDoc(theirFriendRef, {
-              friendUid: myUid,
-              friendName: myName,
-              friendAvatar: getAvatarForName(myName),
-              createdAt: serverTimestamp(),
-            }),
-            deleteDoc(doc(db, "friendRequests", req.id)),
-          ]);
-        } catch (err) {
-          console.error("Помилка прийняття запиту:", err);
-          alert("Не вдалося прийняти запит: " + err.message);
-        }
-      }
-
-      async function handleDeclineRequest(req) {
-        try {
-          await deleteDoc(doc(db, "friendRequests", req.id));
-        } catch (err) {
-          console.error("Помилка відхилення запиту:", err);
-          alert("Не вдалося відхилити запит: " + err.message);
-        }
-      }
-
-      function renderUserResults(term) {
-        userSearchResults.innerHTML = "";
-
-        const trimmed = term.trim();
-        if (!trimmed) {
-          userSearchResults.innerHTML =
-            '<p class="comment-empty">Введіть нік, щоб знайти гравця.</p>';
-          return;
-        }
-
-        const lower = trimmed.toLowerCase();
-        const filtered = usersCache.filter(
-          (u) => u.name && u.name.toLowerCase().includes(lower)
-        );
-
-        if (!filtered.length) {
-          userSearchResults.innerHTML =
-            '<p class="comment-empty">Нічого не знайдено.</p>';
-          return;
-        }
-
-        const now = new Date();
-
-        filtered.forEach((u) => {
-          const name = u.name || "Без імені";
-          const avatarUrl = u.avatar || getAvatarForName(name);
-          const last = u.lastActive?.toDate ? u.lastActive.toDate() : null;
-
-          let status = "Офлайн";
-          let isOnline = false;
-          if (last && now - last < ONLINE_TIMEOUT_MS) {
-            status = "Онлайн";
-            isOnline = true;
-          }
-
-          let relation = "none";
-          if (!currentUserUid) relation = "guest";
-          else if (u.id === currentUserUid) relation = "self";
-          else if (friendsList.some((f) => f.friendUid === u.id))
-            relation = "friend";
-          else if (friendRequestsOutgoing.some((r) => r.toUid === u.id))
-            relation = "outgoing";
-          else if (friendRequestsIncoming.some((r) => r.fromUid === u.id))
-            relation = "incoming";
-
-          const item = document.createElement("div");
-          item.className = "user-result";
-
-          const avatarImg = document.createElement("img");
-          avatarImg.className = "user-result-avatar";
-          avatarImg.src = avatarUrl;
-
-          const avatarWrapper = document.createElement("div");
-          avatarWrapper.className = "user-avatar-wrapper";
-          avatarWrapper.appendChild(avatarImg);
-
-          if (isOnline) {
-            const dot = document.createElement("div");
-            dot.className = "user-status-dot";
-            avatarWrapper.appendChild(dot);
-          }
-
-          const infoDiv = document.createElement("div");
-          infoDiv.className = "user-result-info";
-
-          const nameDiv = document.createElement("div");
-          nameDiv.className = "user-result-name";
-          nameDiv.textContent = name;
-
-          const statusDiv = document.createElement("div");
-          statusDiv.className =
-            "user-result-status " +
-            (status === "Онлайн" ? "online" : "offline");
-          statusDiv.textContent = status;
-
-          infoDiv.appendChild(nameDiv);
-          infoDiv.appendChild(statusDiv);
-
-          if (last) {
-            const lastDiv = document.createElement("div");
-            lastDiv.className = "user-result-last";
-            lastDiv.textContent =
-              "Остання активність: " + last.toLocaleString("uk-UA");
-            infoDiv.appendChild(lastDiv);
-          }
-
-          const actionDiv = document.createElement("div");
-          actionDiv.className = "user-result-action";
-
-          if (relation === "guest") {
-            const note = document.createElement("div");
-            note.className = "user-result-note";
-            note.textContent = "Увійдіть, щоб додавати друзів.";
-            actionDiv.appendChild(note);
-          } else if (relation === "self") {
-            const note = document.createElement("div");
-            note.className = "user-result-note";
-            note.textContent = "Це ви :)";
-            actionDiv.appendChild(note);
-          } else if (relation === "friend") {
-            const note = document.createElement("div");
-            note.className = "user-result-note";
-            note.textContent = "Вже у друзях";
-            actionDiv.appendChild(note);
-          } else if (relation === "outgoing") {
-            const note = document.createElement("div");
-            note.className = "user-result-note";
-            note.textContent = "Запит надіслано";
-            actionDiv.appendChild(note);
-          } else if (relation === "incoming") {
-            const note = document.createElement("div");
-            note.className = "user-result-note";
-            note.textContent =
-              'Є вхідний запит (подивіться в розділі "Запити в друзі").';
-            actionDiv.appendChild(note);
-          } else if (relation === "none") {
-            const btn = document.createElement("button");
-            btn.className = "btn";
-            btn.textContent = "Додати в друзі";
-            btn.addEventListener("click", () => sendFriendRequest(u));
-            actionDiv.appendChild(btn);
-          }
-
-          infoDiv.appendChild(actionDiv);
-
-          item.appendChild(avatarWrapper);
-          item.appendChild(infoDiv);
-          userSearchResults.appendChild(item);
-        });
-      }
-
-      async function sendFriendRequest(targetUser) {
-        if (!currentUserUid || !currentUserName) {
-          alert("Спочатку увійдіть у акаунт, щоб додавати друзів.");
-          return;
-        }
-        if (!targetUser || !targetUser.id) return;
-        if (targetUser.id === currentUserUid) return;
-
-        if (friendsList.some((f) => f.friendUid === targetUser.id)) {
-          alert((targetUser.name || "Гравець") + " уже у ваших друзях.");
-          return;
-        }
-
-        if (friendRequestsOutgoing.some((r) => r.toUid === targetUser.id)) {
-          alert("Запит цьому гравцю вже надіслано.");
-          return;
-        }
-
-        const toName = targetUser.name || "Гравець";
-
-        try {
-          await addDoc(friendRequestsCol, {
-            fromUid: currentUserUid,
-            fromName: currentUserName,
-            toUid: targetUser.id,
-            toName: toName,
-            status: "pending",
-            createdAt: serverTimestamp(),
-          });
-        } catch (err) {
-          console.error("Помилка надсилання запиту в друзі:", err);
-          alert("Не вдалося надіслати запит: " + err.message);
-        }
-      }
-
-      onAuthStateChanged(auth, (user) => {
-        if (user && user.displayName) {
-          const name = user.displayName;
-          currentUserName = name;
-          currentUserUid = user.uid;
-
-          welcomeText.textContent = "Welcome " + name;
-          userNameDisplay.textContent = name;
-          avatarImg.src = getAvatarForName(name);
-
-          loginLink.style.display = "inline-block";
-          signupLink.style.display = "none";
-          logoutBtn.style.display = "inline-block";
-
-          startPresenceUpdater(user.uid, name);
-          subscribeFriendsFor(user.uid);
-          subscribeFriendRequestsFor(user.uid);
-        } else {
-          currentUserName = null;
-          currentUserUid = null;
-
-          welcomeText.textContent = "Welcome Guest";
-          userNameDisplay.textContent = "Гість";
-          avatarImg.src = DEFAULT_AVATAR;
-
-          loginLink.style.display = "inline-block";
-          signupLink.style.display = "inline-block";
-          logoutBtn.style.display = "none";
-
-          stopPresenceUpdater();
-          subscribeFriendsFor(null);
-          subscribeFriendRequestsFor(null);
-        }
-
-        updateCommentUI();
       });
+    }
 
+    // 🔹 Реєстрація
+    if (signupForm) {
+      signupForm.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        signupStatus.textContent = "";
+
+        const name = signupName.value.trim();
+        const email = signupEmail.value.trim();
+        const pass = signupPass.value.trim();
+
+        if (!name) {
+          signupStatus.textContent = "Введи нікнейм.";
+          return;
+        }
+
+        try {
+          // Створюємо акаунт в Auth
+          const cred = await createUserWithEmailAndPassword(auth, email, pass);
+          // Оновлюємо displayName (нік)
+          await updateProfile(cred.user, { displayName: name });
+
+          // Записуємо юзера в Firestore у колекцію users
+          const userRef = doc(db, "users", cred.user.uid);
+          await setDoc(userRef, {
+            name,
+            email,
+            createdAt: serverTimestamp()
+          });
+
+          signupStatus.textContent = "Акаунт створено! Ти увійшов як " + name;
+          signupForm.reset();
+        } catch (err) {
+          console.error(err);
+          signupStatus.textContent = "Помилка реєстрації: " + (err.code || err.message);
+        }
+      });
+    }
+
+    // 🔹 Вхід
+    if (loginForm) {
+      loginForm.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        loginStatus.textContent = "";
+
+        const email = loginEmail.value.trim();
+        const pass = loginPass.value.trim();
+
+        try {
+          await signInWithEmailAndPassword(auth, email, pass);
+          loginStatus.textContent = "Успішний вхід!";
+          loginForm.reset();
+        } catch (err) {
+          console.error(err);
+          loginStatus.textContent = "Помилка входу: " + (err.code || err.message);
+        }
+      });
+    }
+
+    // 🔹 Вихід
+    if (logoutBtn) {
       logoutBtn.addEventListener("click", async () => {
         try {
           await signOut(auth);
         } catch (err) {
           console.error(err);
-          alert("Не вдалося вийти: " + err.message);
         }
       });
+    }
 
-      // Всі користувачі (для пошуку + онлайн друзів)
-      onSnapshot(
-        usersCol,
-        (snapshot) => {
-          usersCache = snapshot.docs.map((d) => ({
-            id: d.id,
-            ...d.data(),
-          }));
-          const term = userSearchInput.value.trim();
-          if (term) renderUserResults(term);
-          renderFriends();
-        },
-        (error) => {
-          console.error("Помилка завантаження користувачів:", error);
-        }
-      );
+    // 🔹 onAuthStateChanged — оновлюємо UI + адмін-панель
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        const name = user.displayName || "Гравець";
+        welcomeName.textContent = name;
+        userNameEl.textContent  = name;
 
-      // Коментарі
-      onSnapshot(
-        commentsQ,
-        (snapshot) => {
-          commentsList.innerHTML = "";
+        // простий аватар: перша літера ніка
+        const firstLetter = name.charAt(0).toUpperCase() || "P";
+        userAvatar.style.backgroundImage =
+          "url('https://dummyimage.com/100x100/383837/ffffff&text=" + encodeURIComponent(firstLetter) + "')";
 
-          if (snapshot.empty) {
-            commentsList.innerHTML =
-              '<p class="comment-empty">Поки що немає коментарів.</p>';
-            return;
-          }
+        authButtons.classList.add("hidden");
+        userInfo.classList.remove("hidden");
+        authCard.classList.add("hidden");
+        loggedCard.classList.remove("hidden");
 
-          snapshot.forEach((docSnap) => {
-            const data = docSnap.data();
-            const text = data.text || "";
-            const author = data.author || "??";
-            const time = data.createdAt?.toDate
-              ? data.createdAt.toDate()
-              : null;
-
-            let timeStr = "";
-            if (time) timeStr = time.toLocaleString("uk-UA");
-
-            const div = document.createElement("div");
-            div.className = "comment";
-            div.innerHTML = `
-              <div class="comment-author">${escapeHtml(author)}</div>
-              <div class="comment-text">${escapeHtml(text)}</div>
-              <div class="comment-date">${timeStr}</div>
-            `;
-            commentsList.appendChild(div);
-          });
-        },
-        (error) => {
-          console.error(error);
-          commentsList.innerHTML =
-            '<p class="comment-empty">Не вдалося завантажити коментарі.</p>';
-        }
-      );
-
-      if (commentForm) {
-        commentForm.addEventListener("submit", async (e) => {
-          e.preventDefault();
-
-          if (!currentUserName || !ALLOWED_COMMENTERS.includes(currentUserName)) {
-            alert("Коментувати можуть тільки davyd3102 та 3102.");
-            return;
-          }
-
-          const text = commentText.value.trim();
-          if (!text) return;
-
-          try {
-            await addDoc(commentsCol, {
-              author: currentUserName,
-              text: text,
-              createdAt: serverTimestamp(),
-            });
-            commentText.value = "";
-          } catch (err) {
-            console.error(err);
-            alert("Не вдалося надіслати коментар: " + err.message);
-          }
-        });
-      }
-
-      if (userSearchBtn && userSearchInput) {
-        userSearchBtn.addEventListener("click", () => {
-          renderUserResults(userSearchInput.value);
-        });
-
-        userSearchInput.addEventListener("keydown", (e) => {
-          if (e.key === "Enter") {
-            e.preventDefault();
-            renderUserResults(userSearchInput.value);
-          }
-        });
-      }
-
-      function applyTheme(theme) {
-        if (theme === "dark") {
-          document.body.classList.add("dark-theme");
+        // Показувати адмін-панель тільки якщо нік — саме "davyd3102"
+        if (name === "davyd3102") {
+          adminPanel.classList.remove("hidden");
         } else {
-          document.body.classList.remove("dark-theme");
+          adminPanel.classList.add("hidden");
         }
+      } else {
+        authButtons.classList.remove("hidden");
+        userInfo.classList.add("hidden");
+        loggedCard.classList.add("hidden");
+        // authCard можна лишити видимим або сховати — на твій смак
+        // authCard.classList.remove("hidden");
       }
+    });
 
-      const savedTheme = localStorage.getItem("pineTheme") || "light";
-      applyTheme(savedTheme);
+    // 🔹 Логіка admin-panel: видалити користувача
+    if (deleteUserBtn) {
+      deleteUserBtn.addEventListener("click", async () => {
+        const name = deleteUserInput.value.trim();
+        deleteUserStatus.textContent = "";
 
-      if (themeToggleBtn) {
-        themeToggleBtn.addEventListener("click", () => {
-          const isDark = document.body.classList.contains("dark-theme");
-          const newTheme = isDark ? "light" : "dark";
-          applyTheme(newTheme);
-          localStorage.setItem("pineTheme", newTheme);
-        });
-      }
-    </script>
+        if (!name) {
+          deleteUserStatus.textContent = "Введи ім'я користувача.";
+          return;
+        }
 
-    <!-- Сніг -->
-    <script>
-      function createSnowflake() {
-        const snowflake = document.createElement("div");
-        snowflake.classList.add("snowflake");
-        snowflake.textContent = "❄";
+        deleteUserStatus.textContent = "Шукаю користувача '" + name + "'...";
 
-        snowflake.style.left = Math.random() * 100 + "vw";
-        snowflake.style.fontSize = 10 + Math.random() * 14 + "px";
-        snowflake.style.opacity = (0.4 + Math.random() * 0.6).toString();
-        snowflake.style.animationDuration = 5 + Math.random() * 5 + "s";
+        try {
+          // 1) шукаємо юзера в колекції users по полю "name"
+          const usersRef = collection(db, "users");
+          const q = query(usersRef, where("name", "==", name));
+          const snap = await getDocs(q);
 
-        document.body.appendChild(snowflake);
+          if (snap.empty) {
+            deleteUserStatus.textContent = "Користувача з таким ім'ям не знайдено.";
+            return;
+          }
 
-        snowflake.addEventListener("animationend", () => {
-          snowflake.remove();
-        });
-      }
+          let deletedCount = 0;
 
-      setInterval(createSnowflake, 200);
-    </script>
-  </body>
+          for (const userDoc of snap.docs) {
+            const uid = userDoc.id;
+
+            // 2) видаляємо профіль з users
+            await deleteDoc(userDoc.ref);
+
+            // 3) видаляємо його стан у грі (якщо є)
+            const gpRef = doc(db, "gamePlayers", uid);
+            await deleteDoc(gpRef).catch(() => {});
+
+            deletedCount++;
+          }
+
+          deleteUserStatus.textContent =
+            "Користувача(ів) '" + name + "' видалено: " + deletedCount + ".";
+          deleteUserInput.value = "";
+        } catch (err) {
+          console.error(err);
+          deleteUserStatus.textContent = "Сталася помилка при видаленні.";
+        }
+      });
+    }
+  </script>
+</body>
 </html>
