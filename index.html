@@ -130,7 +130,7 @@
         </div>
       </div>
 
-      <!-- Основний текст -->
+      <!-- Основний контент -->
       <img
         src="https://learn.logikaschool.com/uploads/student/4796102/6929d42d4c366.png"
         alt="PINE Tycoon"
@@ -155,24 +155,23 @@
 
     <!-- Firebase: підключення й відображення Welcome -->
     <script type="module">
-  // Import the functions you need from the SDKs you need
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js";
-  import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-analytics.js";
-  ...
-  const firebaseConfig = {
-    apiKey: "...",
-    authDomain: "pine-tycoon.firebaseapp.com",
-    projectId: "pine-tycoon",
-    storageBucket: "pine-tycoon.firebasestorage.app",
-    messagingSenderId: "949986190236",
-    appId: "1:949986190236:web:4f5d50078326f5c1981e59",
-    measurementId: "G-2DY6KSY4G7"
-  };
+      import { initializeApp } from 'https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js';
+      import {
+        getAuth,
+        onAuthStateChanged,
+        signOut
+      } from 'https://www.gstatic.com/firebasejs/12.6.0/firebase-auth.js';
 
-  const app = initializeApp(firebaseConfig);
-  const analytics = getAnalytics(app);
-</script>
-
+      // Твій firebaseConfig (з консолі Firebase)
+      const firebaseConfig = {
+        apiKey: "AIzaSyDZEwAbFwLQXxlkkmuMKBFof2J3OE02Egs",
+        authDomain: "pine-tycoon.firebaseapp.com",
+        projectId: "pine-tycoon",
+        storageBucket: "pine-tycoon.firebasestorage.app",
+        messagingSenderId: "949986190236",
+        appId: "1:949986190236:web:4f5d50078326f5c1981e59",
+        measurementId: "G-2DY6KSY4G7"
+      };
 
       const app  = initializeApp(firebaseConfig);
       const auth = getAuth(app);
@@ -205,16 +204,16 @@
       onAuthStateChanged(auth, (user) => {
         if (user && user.displayName) {
           const name = user.displayName;
-          welcomeText.textContent   = "Welcome " + name;
-          userNameDisplay.textContent = name;
+          welcomeText.textContent      = "Welcome " + name;
+          userNameDisplay.textContent  = name;
           avatarImg.src = getAvatarForName(name);
 
           loginLink.style.display  = "none";
           signupLink.style.display = "none";
           logoutBtn.style.display  = "inline-block";
         } else {
-          welcomeText.textContent   = "Welcome Guest";
-          userNameDisplay.textContent = "Гість";
+          welcomeText.textContent      = "Welcome Guest";
+          userNameDisplay.textContent  = "Гість";
           avatarImg.src = DEFAULT_AVATAR;
 
           loginLink.style.display  = "inline-block";
