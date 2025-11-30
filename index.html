@@ -13,11 +13,49 @@
       --accent: #383837;
     }
 
+    html {
+      scroll-behavior: smooth;
+    }
+
     body {
       margin: 0;
       font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
       background: var(--bg);
       color: var(--text);
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    /* Анімація появи */
+    header,
+    .card {
+      opacity: 0;
+      transform: translateY(10px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+
+    body.loaded header,
+    body.loaded .card {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* Сніг */
+    #snowCanvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    header,
+    main,
+    footer {
+      position: relative;
+      z-index: 1;
     }
 
     header {
@@ -38,6 +76,7 @@
       display: flex;
       gap: 12px;
       align-items: center;
+      flex-wrap: wrap;
     }
 
     nav a {
@@ -46,13 +85,17 @@
       padding: 6px 12px;
       border-radius: 6px;
       background: rgba(255,255,255,0.08);
-      transition: transform 0.15s, background 0.15s;
       font-size: 14px;
+      transition:
+        transform 0.2s ease,
+        background 0.2s ease,
+        box-shadow 0.2s ease;
     }
 
     nav a:hover {
       background: rgba(255,255,255,0.2);
-      transform: scale(1.03);
+      transform: translateY(-1px) scale(1.03);
+      box-shadow: 0 4px 10px rgba(0,0,0,0.18);
     }
 
     .auth-buttons button {
@@ -64,12 +107,16 @@
       font-size: 14px;
       background: #ffffff;
       color: #383837;
-      transition: transform 0.15s, background 0.15s;
+      transition:
+        transform 0.2s ease,
+        background 0.2s ease,
+        box-shadow 0.2s ease;
     }
 
     .auth-buttons button:hover {
       background: #f1f1f1;
-      transform: scale(1.03);
+      transform: translateY(-1px) scale(1.03);
+      box-shadow: 0 4px 10px rgba(0,0,0,0.18);
     }
 
     main {
@@ -92,17 +139,17 @@
       gap: 14px;
     }
 
+    .hero img {
+      max-width: 260px;
+      border-radius: 12px;
+      border: 3px solid #383837;
+    }
+
     .hero-top {
       display: flex;
       flex-wrap: wrap;
       gap: 16px;
       align-items: center;
-    }
-
-    .hero img {
-      max-width: 260px;
-      border-radius: 12px;
-      border: 3px solid #383837;
     }
 
     .hero-text h1 {
@@ -118,6 +165,15 @@
     .status-box {
       font-size: 14px;
       color: #555;
+    }
+
+    .blog-section h2 {
+      margin-top: 0;
+      margin-bottom: 8px;
+    }
+
+    .blog-section p {
+      margin-top: 4px;
     }
 
     .auth-forms {
@@ -154,7 +210,9 @@
       font-size: 14px;
     }
 
-    form button[type="submit"] {
+    form button[type="submit"],
+    #deleteUserBtn,
+    #logoutBtn {
       margin-top: 10px;
       padding: 7px 12px;
       border-radius: 6px;
@@ -163,12 +221,32 @@
       color: #fff;
       cursor: pointer;
       font-size: 14px;
-      transition: background 0.15s, transform 0.15s;
+      transition:
+        background 0.2s ease,
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
     }
 
-    form button[type="submit"]:hover {
+    form button[type="submit"]:hover,
+    #deleteUserBtn:hover,
+    #logoutBtn:hover {
       background: #222;
-      transform: scale(1.02);
+      transform: translateY(-1px) scale(1.03);
+      box-shadow: 0 4px 10px rgba(0,0,0,0.18);
+    }
+
+    #deleteUserBtn {
+      background: #e53935;
+    }
+    #deleteUserBtn:hover {
+      background: #c62828;
+    }
+
+    #logoutBtn {
+      background: #e74c3c;
+    }
+    #logoutBtn:hover {
+      background: #c0392b;
     }
 
     .small-text {
@@ -201,21 +279,7 @@
       font-weight: 600;
     }
 
-    #logoutBtn {
-      border-radius: 6px;
-      border: none;
-      padding: 6px 10px;
-      cursor: pointer;
-      background: #e74c3c;
-      color: #fff;
-      font-size: 13px;
-    }
-
-    #logoutBtn:hover {
-      background: #c0392b;
-    }
-
-    /* Admin панель */
+    /* Admin panel */
 
     #adminPanel {
       margin-top: 16px;
@@ -241,134 +305,33 @@
       border: 1px solid #ccc;
     }
 
-    #deleteUserBtn {
-      margin-top: 8px;
-      padding: 6px 10px;
-      border-radius: 6px;
-      border: none;
-      background: #e53935;
-      color: #fff;
-      font-size: 14px;
-      cursor: pointer;
-    }
-
-    #deleteUserBtn:hover {
-      background: #c62828;
-    }
-
     #deleteUserStatus {
       margin-top: 6px;
       font-size: 13px;
     }
 
-    #reloadUsersBtn {
-      margin-top: 6px;
-      padding: 4px 8px;
-      border-radius: 6px;
-      border: none;
-      background: #383837;
-      color: #fff;
-      font-size: 13px;
-      cursor: pointer;
+    /* Онлайн гравці */
+
+    #onlineList {
+      list-style: none;
+      padding-left: 0;
+      margin: 6px 0 0;
     }
 
-    #reloadUsersBtn:hover {
-      background: #222;
-    }
-
-    #usersList div {
-      margin-bottom: 6px;
-    }
-
-    /* Друзі */
-
-    #friendsSection h3 {
-      margin-top: 0;
-      margin-bottom: 8px;
-    }
-
-    #searchUserRow {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 6px;
-      align-items: center;
-      margin-bottom: 8px;
-    }
-
-    #searchUserInput {
-      flex: 1;
-      min-width: 180px;
-      padding: 6px 8px;
-      border-radius: 6px;
-      border: 1px solid #ccc;
+    #onlineList li {
       font-size: 14px;
-    }
-
-    #searchUserBtn,
-    #refreshFriendsBtn {
-      padding: 6px 10px;
-      border-radius: 6px;
-      border: none;
-      background: #383837;
-      color: #fff;
-      font-size: 13px;
-      cursor: pointer;
-    }
-
-    #searchUserBtn:hover,
-    #refreshFriendsBtn:hover {
-      background: #222;
-    }
-
-    #searchUserResults,
-    #friendRequestsList,
-    #friendsList {
-      margin-top: 6px;
-      font-size: 13px;
-    }
-
-    .user-row {
-      border-bottom: 1px solid #eee;
-      padding: 4px 0;
-    }
-
-    .user-row-main {
+      margin-bottom: 4px;
       display: flex;
-      justify-content: space-between;
       align-items: center;
       gap: 6px;
     }
 
-    .user-row-main span {
-      display: block;
-    }
-
-    .user-row button {
-      padding: 3px 6px;
-      border-radius: 4px;
-      border: none;
-      background: #2e7d32;
-      color: #fff;
-      font-size: 12px;
-      cursor: pointer;
-    }
-
-    .user-row button:hover {
-      background: #1b5e20;
-    }
-
-    .user-row .danger {
-      background: #e53935;
-    }
-
-    .user-row .danger:hover {
-      background: #c62828;
-    }
-
-    /* Простий статичний блог (як текст) */
-
-    .blog-section h2 {
-      margin-top: 0;
+    .online-dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: #95a5a6;
+      flex-shrink: 0;
     }
 
     footer {
@@ -400,6 +363,9 @@
     </nav>
   </header>
 
+  <!-- Сніг -->
+  <canvas id="snowCanvas"></canvas>
+
   <main>
     <!-- Головний блок про гру -->
     <section class="card hero">
@@ -412,21 +378,28 @@
           <h1>PINE Tycoon</h1>
           <p>
             Ласкаво просимо до зимового тайкуна, де ви рубаєте дерева, будуєте
-            дерев’яне село та намагаєтесь не замерзнути в заметілі 🌨️
+            дерев’яне село та намагаєтесь не замерзнути в заметілі 
           </p>
           <p class="status-box">
             Поточна версія: <b>1.0 – мультиплеєрна альфа</b><br />
-            Додано: систему акаунтів, мультиплеєр та друзів.
+            Додано: систему акаунтів, синхронізацію гравців та базовий мультиплеєр.
           </p>
         </div>
       </div>
+    </section>
+
+    <!-- Гравці онлайн -->
+    <section class="card" id="onlineCard">
+      <h2>Гравці онлайн</h2>
+      <p id="onlineSummary" class="small-text">Завантаження...</p>
+      <ul id="onlineList"></ul>
     </section>
 
     <!-- Блок для реєстрації / входу -->
     <section class="card" id="authCard">
       <h2>Акаунт</h2>
       <p class="small-text">
-        Створи акаунт, щоб грати під своїм ім’ям у мультиплеєрі та додавати друзів.
+        Створи акаунт, щоб грати під своїм ім’ям у мультиплеєрі, а також у майбутньому залишати коментарі, додавати друзів тощо.
       </p>
 
       <div class="auth-forms">
@@ -469,56 +442,22 @@
       </div>
     </section>
 
-    <!-- Блок для залогіненого користувача -->
+    <!-- Блок для залогіненого користувача + адмін-панель -->
     <section class="card hidden" id="loggedCard">
       <h2>Привіт, <span id="welcomeName">гравцю</span>!</h2>
       <p>
-        Ти увійшов у систему. Коли запускаєш гру
-        через кнопку <b>Грати!</b>, мультиплеєр розпізнає твоє ім’я.
+        Ти увійшов у систему. Тепер, коли ти запускаєш гру
+        через кнопку <b>Грати!</b>, мультиплеєр зможе розпізнати твоє ім’я.
       </p>
-
-      <!-- Друзі + пошук -->
-      <div id="friendsSection">
-        <h3>Друзі</h3>
-        <p class="small-text">
-          Знайди іншого користувача за ніком або email-ом і додай у друзі.  
-          Інша сторона зможе прийняти або відхилити запит.
-        </p>
-
-        <div id="searchUserRow">
-          <input
-            id="searchUserInput"
-            type="text"
-            placeholder="Введи нік або email для пошуку..."
-          />
-          <button id="searchUserBtn">Шукати</button>
-          <button id="refreshFriendsBtn">Оновити друзів</button>
-        </div>
-
-        <div id="searchUserResults" class="small-text">
-          (Результати пошуку з’являться тут)
-        </div>
-
-        <h4>Запити в друзі</h4>
-        <div id="friendRequestsList" class="small-text">
-          (Поки що немає запитів)
-        </div>
-
-        <h4>Мої друзі</h4>
-        <div id="friendsList" class="small-text">
-          (Список друзів порожній)
-        </div>
-      </div>
 
       <!-- Адмін-панель лише для davyd3102 -->
       <div id="adminPanel" class="hidden">
         <h3>Admin панель (тільки для davyd3102)</h3>
         <p class="small-text">
-          Тут ти можеш видаляти користувачів з <b>users</b> та <b>gamePlayers</b>.  
-          <b>Тут видно email усіх користувачів</b>. Для інших гравців email прихований.
+          Тут ти можеш видалити користувача з колекції <b>users</b> та <b>gamePlayers</b>.
+          Це ніби "бан" – профіль зникне з сайту та з мультиплеєра.
         </p>
 
-        <!-- Видалення за ім'ям -->
         <label>
           Ім’я користувача для видалення:
           <input id="deleteUserInput" type="text" placeholder="Наприклад: 3102" />
@@ -526,31 +465,20 @@
 
         <button id="deleteUserBtn">Видалити користувача</button>
         <div id="deleteUserStatus"></div>
-
-        <hr style="margin:10px 0;">
-
-        <!-- Список всіх користувачів -->
-        <h4>Список усіх користувачів</h4>
-        <p class="small-text">
-          Тут видно нік, email та uid кожного юзера. Ця інформація доступна тільки тобі.
-        </p>
-        <button id="reloadUsersBtn">Оновити список</button>
-        <div id="usersList" class="small-text" style="margin-top:8px;"></div>
       </div>
     </section>
 
-    <!-- Простий статичний блог як текст (без Firebase) -->
+    <!-- Блог -->
     <section class="card blog-section" id="blog">
       <h2>Блог</h2>
-      <p><i>Останні зміни:</i></p>
+      <p><i>Останнє оновлення:</i></p>
       <ul>
         <li>Додано систему акаунтів на Firebase.</li>
-        <li>Додано друзів і запити в друзі.</li>
-        <li>Підключено першу версію мультиплеєра в грі.</li>
+        <li>Підключено мультиплеєр між гравцями (перша альфа).</li>
+        <li>Підготовлено адмін-панель для <b>davyd3102</b> ✨</li>
+        <li>Додано снігову анімацію та відображення гравців онлайн.</li>
       </ul>
-      <p class="small-text">
-        Надалі записи можна буде змінювати прямо в коді (або зробимо окрему адмін-панель для блогу).
-      </p>
+      <p>Незабаром тут з’являться нотатки про розробку, зміни балансу та нові будівлі.</p>
     </section>
   </main>
 
@@ -558,8 +486,72 @@
     © 2025 PINE Tycoon — бета-версія гри з мультиплеєром
   </footer>
 
-  <!-- Firebase + логіка акаунтів, друзів і адмін-панелі -->
+  <!-- Firebase + логіка акаунтів, адмінки, онлайн-статусу і снігу -->
   <script type="module">
+    // Анімація появи сторінки
+    window.addEventListener("load", () => {
+      document.body.classList.add("loaded");
+    });
+
+    // Синій сніг
+    const snowCanvas = document.getElementById("snowCanvas");
+    const snowCtx = snowCanvas.getContext("2d");
+    let snowflakes = [];
+    let lastSnowTime = 0;
+
+    function resizeSnow() {
+      snowCanvas.width = window.innerWidth;
+      snowCanvas.height = window.innerHeight;
+    }
+
+    function initSnow(count = 140) {
+      resizeSnow();
+      snowflakes = [];
+      for (let i = 0; i < count; i++) {
+        snowflakes.push({
+          x: Math.random() * snowCanvas.width,
+          y: Math.random() * snowCanvas.height,
+          r: 1 + Math.random() * 1.8,
+          speed: 20 + Math.random() * 40,
+          drift: -15 + Math.random() * 30
+        });
+      }
+    }
+
+    function snowLoop(timestamp) {
+      const dt = (timestamp - lastSnowTime) / 1000 || 0;
+      lastSnowTime = timestamp;
+
+      snowCtx.clearRect(0, 0, snowCanvas.width, snowCanvas.height);
+      snowCtx.fillStyle = "rgba(80,160,255,0.9)";
+
+      for (const f of snowflakes) {
+        f.y += f.speed * dt;
+        f.x += f.drift * dt;
+
+        if (f.y > snowCanvas.height + f.r) {
+          f.y = -f.r;
+          f.x = Math.random() * snowCanvas.width;
+        }
+        if (f.x < -10) f.x = snowCanvas.width + 10;
+        if (f.x > snowCanvas.width + 10) f.x = -10;
+
+        snowCtx.beginPath();
+        snowCtx.arc(f.x, f.y, f.r, 0, Math.PI * 2);
+        snowCtx.fill();
+      }
+
+      requestAnimationFrame(snowLoop);
+    }
+
+    initSnow(150);
+    requestAnimationFrame(snowLoop);
+    window.addEventListener("resize", () => {
+      resizeSnow();
+      initSnow(snowflakes.length || 150);
+    });
+
+    // -------- Firebase --------
     import { initializeApp } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js";
     import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-analytics.js";
     import {
@@ -576,15 +568,13 @@
       doc,
       setDoc,
       getDocs,
-      getDoc,
       query,
       where,
       deleteDoc,
-      updateDoc,
-      serverTimestamp
+      serverTimestamp,
+      onSnapshot
     } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-firestore.js";
 
-    // 🔧 Firebase конфіг
     const firebaseConfig = {
       apiKey: "AIzaSyDZEwAbFwLQXxlkkmuMKBFof2J3OE02Egs",
       authDomain: "pine-tycoon.firebaseapp.com",
@@ -623,30 +613,26 @@
     const userNameEl   = document.getElementById("userName");
     const logoutBtn    = document.getElementById("logoutBtn");
 
-    // Admin
     const adminPanel       = document.getElementById("adminPanel");
     const deleteUserInput  = document.getElementById("deleteUserInput");
     const deleteUserBtn    = document.getElementById("deleteUserBtn");
     const deleteUserStatus = document.getElementById("deleteUserStatus");
-    const reloadUsersBtn   = document.getElementById("reloadUsersBtn");
-    const usersList        = document.getElementById("usersList");
 
-    // Friends
-    const searchUserInput      = document.getElementById("searchUserInput");
-    const searchUserBtn        = document.getElementById("searchUserBtn");
-    const searchUserResults    = document.getElementById("searchUserResults");
-    const friendRequestsList   = document.getElementById("friendRequestsList");
-    const friendsList          = document.getElementById("friendsList");
-    const refreshFriendsBtn    = document.getElementById("refreshFriendsBtn");
+    const onlineSummary = document.getElementById("onlineSummary");
+    const onlineListEl  = document.getElementById("onlineList");
 
-    // 🔹 Показати/сховати блок авторизації по кнопці в хедері
+    // Показати/сховати блок авторизації по кнопці в хедері
     if (showAuthBtn) {
       showAuthBtn.addEventListener("click", () => {
-        authCard.classList.toggle("hidden");
+        if (authCard.classList.contains("hidden")) {
+          authCard.classList.remove("hidden");
+        } else {
+          authCard.classList.add("hidden");
+        }
       });
     }
 
-    // 🔹 Реєстрація
+    // Реєстрація
     if (signupForm) {
       signupForm.addEventListener("submit", async (e) => {
         e.preventDefault();
@@ -681,7 +667,7 @@
       });
     }
 
-    // 🔹 Вхід
+    // Вхід
     if (loginForm) {
       loginForm.addEventListener("submit", async (e) => {
         e.preventDefault();
@@ -701,7 +687,7 @@
       });
     }
 
-    // 🔹 Вихід
+    // Вихід
     if (logoutBtn) {
       logoutBtn.addEventListener("click", async () => {
         try {
@@ -712,340 +698,35 @@
       });
     }
 
-    // 🔹 ID пари для дружби
-    function pairId(uid1, uid2) {
-      return uid1 < uid2 ? uid1 + "_" + uid2 : uid2 + "_" + uid1;
-    }
+    // onAuthStateChanged — оновлюємо UI + адмін-панель
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        const name = user.displayName || "Гравець";
+        welcomeName.textContent = name;
+        userNameEl.textContent  = name;
 
-    // 🔹 Надсилання запиту в друзі
-    async function sendFriendRequest(targetUid, targetName) {
-      const user = auth.currentUser;
-      if (!user) {
-        alert("Спочатку увійди в акаунт.");
-        return;
-      }
-      if (user.uid === targetUid) {
-        alert("Не можна додати себе в друзі :)");
-        return;
-      }
+        const firstLetter = name.charAt(0).toUpperCase() || "P";
+        userAvatar.style.backgroundImage =
+          "url('https://dummyimage.com/100x100/383837/ffffff&text=" + encodeURIComponent(firstLetter) + "')";
 
-      const myName = user.displayName || "Гравець";
-      const id = pairId(user.uid, targetUid);
-      const frRef = doc(db, "friendRequests", id);
+        authButtons.classList.add("hidden");
+        userInfo.classList.remove("hidden");
+        authCard.classList.add("hidden");
+        loggedCard.classList.remove("hidden");
 
-      try {
-        const frSnap = await getDoc(frRef);
-        if (frSnap.exists()) {
-          const data = frSnap.data();
-          if (data.status === "accepted") {
-            alert("Ви вже друзі.");
-            return;
-          }
-          if (data.status === "pending") {
-            if (data.fromUid === user.uid) {
-              alert("Запит уже надіслано.");
-            } else {
-              alert("У тебе вже є вхідний запит від цього користувача.");
-            }
-            return;
-          }
-          if (data.status === "declined") {
-            alert("Попередній запит було відхилено.");
-            return;
-          }
-        }
-
-        await setDoc(frRef, {
-          fromUid: user.uid,
-          fromName: myName,
-          toUid: targetUid,
-          toName: targetName,
-          status: "pending",
-          createdAt: serverTimestamp()
-        });
-
-        alert("Запит у друзі надіслано " + targetName);
-      } catch (err) {
-        console.error(err);
-        alert("Помилка під час надсилання запиту.");
-      }
-    }
-
-    // 🔹 Завантаження друзів і запитів
-    async function loadFriendsAndRequests() {
-      const user = auth.currentUser;
-      if (!user) return;
-
-      const uid = user.uid;
-      const reqRef = collection(db, "friendRequests");
-
-      // Вхідні запити
-      friendRequestsList.textContent = "Завантажую запити...";
-      try {
-        const incomingQ = query(reqRef, where("toUid", "==", uid));
-        const incomingSnap = await getDocs(incomingQ);
-
-        friendRequestsList.innerHTML = "";
-        let hasPending = false;
-
-        incomingSnap.forEach((docSnap) => {
-          const data = docSnap.data() || {};
-          if (data.status !== "pending") return;
-
-          hasPending = true;
-          const row = document.createElement("div");
-          row.className = "user-row";
-
-          const main = document.createElement("div");
-          main.className = "user-row-main";
-          const span = document.createElement("span");
-          span.textContent = data.fromName + " хоче додати тебе в друзі";
-          main.appendChild(span);
-
-          const btnAccept = document.createElement("button");
-          btnAccept.textContent = "Прийняти";
-          btnAccept.onclick = async () => {
-            try {
-              await updateDoc(doc(db, "friendRequests", docSnap.id), {
-                status: "accepted"
-              });
-              loadFriendsAndRequests();
-            } catch (err) {
-              console.error(err);
-              alert("Помилка при прийнятті запиту.");
-            }
-          };
-
-          const btnDecline = document.createElement("button");
-          btnDecline.textContent = "Відхилити";
-          btnDecline.className = "danger";
-          btnDecline.onclick = async () => {
-            try {
-              await updateDoc(doc(db, "friendRequests", docSnap.id), {
-                status: "declined"
-              });
-              loadFriendsAndRequests();
-            } catch (err) {
-              console.error(err);
-              alert("Помилка при відхиленні запиту.");
-            }
-          };
-
-          const btns = document.createElement("div");
-          btns.appendChild(btnAccept);
-          btns.appendChild(btnDecline);
-
-          main.appendChild(btns);
-          row.appendChild(main);
-          friendRequestsList.appendChild(row);
-        });
-
-        if (!hasPending) {
-          friendRequestsList.textContent = "(Поки що немає запитів)";
-        }
-      } catch (err) {
-        console.error(err);
-        friendRequestsList.textContent = "Помилка при завантаженні запитів.";
-      }
-
-      // Друзі (accepted)
-      friendsList.textContent = "Завантажую друзів...";
-      try {
-        const friendsMap = new Map();
-
-        const fromQ = query(reqRef, where("fromUid", "==", uid));
-        const fromSnap = await getDocs(fromQ);
-        fromSnap.forEach((docSnap) => {
-          const data = docSnap.data() || {};
-          if (data.status === "accepted") {
-            friendsMap.set(data.toUid, data.toName);
-          }
-        });
-
-        const toQ = query(reqRef, where("toUid", "==", uid));
-        const toSnap = await getDocs(toQ);
-        toSnap.forEach((docSnap) => {
-          const data = docSnap.data() || {};
-          if (data.status === "accepted") {
-            friendsMap.set(data.fromUid, data.fromName);
-          }
-        });
-
-        friendsList.innerHTML = "";
-        if (friendsMap.size === 0) {
-          friendsList.textContent = "(Список друзів порожній)";
+        if (name === "davyd3102") {
+          adminPanel.classList.remove("hidden");
         } else {
-          friendsMap.forEach((name) => {
-            const row = document.createElement("div");
-            row.className = "user-row";
-            const main = document.createElement("div");
-            main.className = "user-row-main";
-
-            const span = document.createElement("span");
-            span.textContent = name;
-            main.appendChild(span);
-
-            row.appendChild(main);
-            friendsList.appendChild(row);
-          });
+          adminPanel.classList.add("hidden");
         }
-      } catch (err) {
-        console.error(err);
-        friendsList.textContent = "Помилка при завантаженні друзів.";
+      } else {
+        authButtons.classList.remove("hidden");
+        userInfo.classList.add("hidden");
+        loggedCard.classList.add("hidden");
       }
-    }
+    });
 
-    if (refreshFriendsBtn) {
-      refreshFriendsBtn.addEventListener("click", loadFriendsAndRequests);
-    }
-
-    // 🔹 Пошук користувачів (іншим показуємо тільки нік, без email)
-    async function searchUsers() {
-      const termRaw = searchUserInput.value.trim();
-      if (!termRaw) {
-        searchUserResults.textContent = "Введи нік або email для пошуку.";
-        return;
-      }
-      const term = termRaw.toLowerCase();
-      const user = auth.currentUser;
-      if (!user) {
-        searchUserResults.textContent = "Спочатку увійди в акаунт.";
-        return;
-      }
-
-      searchUserResults.textContent = "Шукаю користувачів...";
-      try {
-        const usersRef = collection(db, "users");
-        const snap = await getDocs(usersRef);
-
-        searchUserResults.innerHTML = "";
-        let found = 0;
-
-        snap.forEach((docSnap) => {
-          const data = docSnap.data() || {};
-          const uid = docSnap.id;
-
-          const name = (data.name || "").toLowerCase();
-          const email = (data.email || "").toLowerCase();
-
-          if (uid === user.uid) return;
-
-          if (name.includes(term) || email.includes(term)) {
-            found++;
-            const row = document.createElement("div");
-            row.className = "user-row";
-
-            const main = document.createElement("div");
-            main.className = "user-row-main";
-
-            const span = document.createElement("span");
-            span.innerHTML =
-              "<b>" + (data.name || "(без імені)") + "</b>";
-            main.appendChild(span);
-
-            const btnAdd = document.createElement("button");
-            btnAdd.textContent = "Додати в друзі";
-            btnAdd.onclick = () =>
-              sendFriendRequest(uid, data.name || "Гравець");
-
-            main.appendChild(btnAdd);
-            row.appendChild(main);
-            searchUserResults.appendChild(row);
-          }
-        });
-
-        if (found === 0) {
-          searchUserResults.textContent = "Нікого не знайдено.";
-        }
-      } catch (err) {
-        console.error(err);
-        searchUserResults.textContent = "Помилка при пошуку користувачів.";
-      }
-    }
-
-    if (searchUserBtn) {
-      searchUserBtn.addEventListener("click", searchUsers);
-    }
-
-    if (searchUserInput) {
-      searchUserInput.addEventListener("keydown", (e) => {
-        if (e.key === "Enter") {
-          e.preventDefault();
-          searchUsers();
-        }
-      });
-    }
-
-    // 🔹 Список користувачів для адміна (з email)
-    async function loadUsersForAdmin() {
-      if (!usersList) return;
-      usersList.textContent = "Завантажую список користувачів...";
-
-      try {
-        const usersRef = collection(db, "users");
-        const snap = await getDocs(usersRef);
-
-        if (snap.empty) {
-          usersList.textContent = "Користувачів ще немає.";
-          return;
-        }
-
-        usersList.innerHTML = "";
-
-        snap.forEach((docSnap) => {
-          const data = docSnap.data() || {};
-          const row = document.createElement("div");
-          row.className = "user-row";
-
-          const main = document.createElement("div");
-          main.className = "user-row-main";
-
-          const span = document.createElement("span");
-          span.textContent =
-            (data.name || "(без імені)") + " — " + (data.email || "(немає email)");
-          main.appendChild(span);
-
-          const uidSmall = document.createElement("div");
-          uidSmall.style.fontSize = "11px";
-          uidSmall.style.opacity = "0.7";
-          uidSmall.textContent = "uid: " + docSnap.id;
-          row.appendChild(uidSmall);
-
-          const delBtn = document.createElement("button");
-          delBtn.textContent = "Видалити цього користувача";
-          delBtn.className = "danger";
-          delBtn.style.marginTop = "2px";
-          delBtn.onclick = async () => {
-            const nick = data.name || "(без імені)";
-            if (!confirm("Точно видалити користувача " + nick + "?")) return;
-
-            usersList.textContent = "Видаляю " + nick + "...";
-
-            try {
-              await deleteDoc(doc(db, "users", docSnap.id));
-              await deleteDoc(doc(db, "gamePlayers", docSnap.id)).catch(() => {});
-              usersList.textContent = "Користувача видалено. Натисни 'Оновити список'.";
-            } catch (err) {
-              console.error(err);
-              usersList.textContent = "Помилка при видаленні користувача.";
-            }
-          };
-
-          row.appendChild(main);
-          row.appendChild(delBtn);
-          usersList.appendChild(row);
-        });
-      } catch (err) {
-        console.error(err);
-        usersList.textContent = "Помилка при завантаженні користувачів.";
-      }
-    }
-
-    if (reloadUsersBtn) {
-      reloadUsersBtn.addEventListener("click", loadUsersForAdmin);
-    }
-
-    // 🔹 Видалення користувача за ім'ям (через admin-панель)
+    // Admin-panel: видалити користувача
     if (deleteUserBtn) {
       deleteUserBtn.addEventListener("click", async () => {
         const name = deleteUserInput.value.trim();
@@ -1072,12 +753,10 @@
 
           for (const userDoc of snap.docs) {
             const uid = userDoc.id;
-
             await deleteDoc(userDoc.ref);
 
             const gpRef = doc(db, "gamePlayers", uid);
             await deleteDoc(gpRef).catch(() => {});
-
             deletedCount++;
           }
 
@@ -1091,44 +770,58 @@
       });
     }
 
-    // 🔹 onAuthStateChanged — оновлюємо UI
-    onAuthStateChanged(auth, (user) => {
-      if (user) {
-        const name = user.displayName || "Гравець";
-        welcomeName.textContent = name;
-        userNameEl.textContent  = name;
+    // Онлайн гравці (по колекції gamePlayers)
+    const gamePlayersCol = collection(db, "gamePlayers");
+    const MAX_INACTIVE_MS = 30000; // 30 секунд
 
-        const firstLetter = name.charAt(0).toUpperCase() || "P";
-        userAvatar.style.backgroundImage =
-          "url('https://dummyimage.com/100x100/383837/ffffff&text=" +
-          encodeURIComponent(firstLetter) +
-          "')";
+    if (onlineSummary && onlineListEl) {
+      onSnapshot(
+        gamePlayersCol,
+        (snapshot) => {
+          const now = Date.now();
+          const players = [];
 
-        authButtons.classList.add("hidden");
-        userInfo.classList.remove("hidden");
-        authCard.classList.add("hidden");
-        loggedCard.classList.remove("hidden");
+          snapshot.forEach((docSnap) => {
+            const data = docSnap.data() || {};
+            const name = data.name || "Гравець";
+            const updatedAt = data.updatedAt && data.updatedAt.toDate
+              ? data.updatedAt.toDate().getTime()
+              : 0;
+            const online = updatedAt && (now - updatedAt) < MAX_INACTIVE_MS;
+            players.push({ name, online });
+          });
 
-        // тільки для davyd3102 показуємо adminPanel з email
-        if (name === "davyd3102") {
-          adminPanel.classList.remove("hidden");
-          loadUsersForAdmin();
-        } else {
-          adminPanel.classList.add("hidden");
+          if (players.length === 0) {
+            onlineSummary.textContent = "Ніхто зараз не у грі.";
+            onlineListEl.innerHTML = "";
+            return;
+          }
+
+          const onlineCount = players.filter(p => p.online).length;
+          onlineSummary.textContent =
+            "Онлайн у грі зараз: " + onlineCount + " із " + players.length;
+
+          players.sort((a, b) => a.name.localeCompare(b.name));
+          onlineListEl.innerHTML = "";
+
+          for (const p of players) {
+            const li = document.createElement("li");
+            const dot = document.createElement("span");
+            dot.className = "online-dot";
+            dot.style.backgroundColor = p.online ? "#2ecc71" : "#95a5a6";
+            li.appendChild(dot);
+            li.appendChild(document.createTextNode(
+              p.name + (p.online ? " — у грі" : " — офлайн")
+            ));
+            onlineListEl.appendChild(li);
+          }
+        },
+        (err) => {
+          console.error(err);
+          onlineSummary.textContent = "Не вдалося завантажити статус гравців.";
         }
-
-        loadFriendsAndRequests();
-      } else {
-        authButtons.classList.remove("hidden");
-        userInfo.classList.add("hidden");
-        loggedCard.classList.add("hidden");
-
-        friendRequestsList.textContent = "(Поки що немає запитів)";
-        friendsList.textContent = "(Список друзів порожній)";
-        searchUserResults.textContent = "(Результати пошуку з’являться тут)";
-        if (usersList) usersList.innerHTML = "";
-      }
-    });
+      );
+    }
   </script>
 </body>
 </html>
