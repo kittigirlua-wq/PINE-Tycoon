@@ -5,10 +5,29 @@
     <title>PINE Tycoon</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <!-- Твій основний CSS з анімованими кнопками -->
+    <!-- Твій основний CSS (старі стилі, шрифти тощо) -->
     <link rel="stylesheet" href="style.css">
 
     <style>
+      /* --- ТЕМИ (світла/темна) через CSS-змінні --- */
+      :root {
+        --bg-color: #f4f4f4;
+        --text-color: #000000;
+        --card-bg: #ffffff;
+        --footer-bg: #383837;
+        --button-bg: #ffffff;
+        --button-text: rgb(56, 56, 55);
+      }
+
+      body.dark-theme {
+        --bg-color: rgb(69, 61, 61);
+        --text-color: #ffffff;
+        --card-bg: #4f4747;
+        --footer-bg: #201c1c;
+        --button-bg: transparent;
+        --button-text: #ffffff;
+      }
+
       /* Макет сторінки */
       html, body {
         height: 100%;
@@ -18,12 +37,17 @@
       body {
         display: flex;
         flex-direction: column;
-        background: #f4f4f4;
+        background: var(--bg-color);
+        color: var(--text-color);
       }
 
       header {
         position: relative;
-        min-height: 50px;
+        min-height: 56px;
+        padding: 8px 16px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
       }
 
       main {
@@ -34,39 +58,50 @@
       footer {
         text-align: center;
         padding: 10px;
-        background: #383837;
+        background: var(--footer-bg);
         color: #fff;
       }
 
-      /* Кнопки авторизації в правому верхньому куті */
-      .auth-buttons {
-        position: fixed;
-        top: 10px;
-        right: 20px;
-        z-index: 1000;
-      }
-
-      .auth-buttons a,
-      .auth-buttons button {
-        margin-left: 8px;
-        padding: 6px 12px;
+      /* --- УНІВЕРСАЛЬНА КНОПКА (і для навігації, і для логіну) --- */
+      .btn {
+        display: inline-block;
+        padding: 6px 14px;
         font-size: 14px;
-        border-radius: 4px;
-        border: 1px solid rgb(56,56,55);
-        background: #ffffff;
-        color: rgb(56,56,55);
+        border-radius: 999px;
+        border: 1px solid var(--button-text);
+        background: var(--button-bg);
+        color: var(--button-text);
         text-decoration: none;
         cursor: pointer;
+        transform: scale(1);
+        transition:
+          transform 0.15s ease,
+          box-shadow 0.15s ease,
+          background 0.15s ease,
+          color 0.15s ease,
+          border-color 0.15s ease;
       }
 
-      .auth-buttons button {
-        border-color: #c00;
-        color: #c00;
+      .btn:hover {
+        transform: scale(1.07);
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.18);
       }
 
-      .auth-buttons a:hover,
-      .auth-buttons button:hover {
-        opacity: 0.9;
+      /* Навігація зліва (Грати / Блог) */
+      .main-nav {
+        display: flex;
+        gap: 8px;
+      }
+
+      .main-nav .btn {
+        margin: 0;
+      }
+
+      /* Кнопки авторизації справа */
+      .auth-buttons {
+        display: flex;
+        align-items: center;
+        gap: 8px;
       }
 
       /* Привітання + панель акаунта */
@@ -82,7 +117,7 @@
         gap: 12px;
         padding: 10px 14px;
         border-radius: 10px;
-        background: #ffffff;
+        background: var(--card-bg);
         box-shadow: 0 2px 6px rgba(0,0,0,0.08);
         margin-bottom: 20px;
         max-width: 340px;
@@ -107,7 +142,7 @@
       #commentsSection {
         margin-top: 20px;
         max-width: 600px;
-        background: #ffffff;
+        background: var(--card-bg);
         padding: 12px 16px;
         border-radius: 10px;
         box-shadow: 0 2px 6px rgba(0,0,0,0.08);
@@ -130,6 +165,10 @@
         border-bottom: 1px solid #e1e1e1;
       }
 
+      body.dark-theme .comment {
+        border-bottom-color: rgba(255,255,255,0.15);
+      }
+
       .comment:last-child {
         border-bottom: none;
       }
@@ -149,9 +188,17 @@
         color: #777;
       }
 
+      body.dark-theme .comment-date {
+        color: #ccc;
+      }
+
       .comment-empty {
         font-size: 14px;
         color: #666;
+      }
+
+      body.dark-theme .comment-empty {
+        color: #ddd;
       }
 
       #commentForm textarea {
@@ -163,27 +210,59 @@
         border-radius: 6px;
         border: 1px solid #ccc;
         box-sizing: border-box;
+        background: #fff;
+        color: #000;
+      }
+
+      body.dark-theme #commentForm textarea {
+        background: #3c3636;
+        color: #fff;
+        border-color: #777;
       }
 
       #commentForm button {
         margin-top: 6px;
-        padding: 6px 12px;
-        font-size: 14px;
-        border-radius: 4px;
-        border: none;
-        background: rgb(56,56,55);
-        color: #fff;
-        cursor: pointer;
-      }
-
-      #commentForm button:hover {
-        opacity: 0.9;
       }
 
       .comment-info {
         font-size: 12px;
         color: #555;
         margin-top: 4px;
+      }
+
+      body.dark-theme .comment-info {
+        color: #ddd;
+      }
+
+      /* Кнопка перемикання теми (правий нижній кут) */
+      .theme-toggle {
+        position: fixed;
+        right: 16px;
+        bottom: 16px;
+        width: 44px;
+        height: 44px;
+        border-radius: 50%;
+        border: 1px solid var(--button-text);
+        background: var(--card-bg);
+        color: var(--button-text);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.25);
+        z-index: 1100;
+        font-size: 20px;
+        transition:
+          transform 0.15s ease,
+          box-shadow 0.15s ease,
+          background 0.15s ease,
+          color 0.15s ease,
+          border-color 0.15s ease;
+      }
+
+      .theme-toggle:hover {
+        transform: scale(1.08);
+        box-shadow: 0 3px 10px rgba(0,0,0,0.35);
       }
 
       /* Сніг (сині сніжинки) */
@@ -213,18 +292,18 @@
 
   <body>
     <header>
-      <!-- Кнопки входу/реєстрації/виходу (правий верхній кут) -->
-      <div class="auth-buttons">
-        <a href="login.html" id="loginLink">Sign in</a>
-        <a href="signup.html" id="signupLink">Sign up</a>
-        <button id="logoutBtn" style="display:none;">Log out</button>
-      </div>
-
-      <!-- Ліве анімоване меню з твого style.css -->
-      <nav>
-        <a href="game.html" class="about">Грати!</a>
-        <a href="#blog" class="blog">Блог</a>
+      <!-- Ліва навігація (Грати / Блог) як гарні кнопки -->
+      <nav class="main-nav">
+        <a href="game.html" class="btn">Грати!</a>
+        <a href="#blog" class="btn">Блог</a>
       </nav>
+
+      <!-- Праворуч — кнопки входу/реєстрації/виходу -->
+      <div class="auth-buttons">
+        <a href="login.html" id="loginLink" class="btn">Sign in</a>
+        <a href="signup.html" id="signupLink" class="btn">Sign up</a>
+        <button id="logoutBtn" class="btn" style="display:none;">Log out</button>
+      </div>
     </header>
 
     <main>
@@ -272,7 +351,7 @@
         <!-- Форму бачать тільки davyd3102 та 3102 -->
         <form id="commentForm" style="display:none;">
           <textarea id="commentText" placeholder="Напишіть оновлення про гру або думку..."></textarea>
-          <button type="submit">Надіслати коментар</button>
+          <button type="submit" class="btn">Надіслати коментар</button>
         </form>
 
         <p id="commentInfo" class="comment-info">
@@ -285,7 +364,10 @@
       © 2025 PINE Tycoon — бета-версія гри
     </footer>
 
-    <!-- Firebase: Auth + Firestore (коментарі) -->
+    <!-- Кнопка налаштувань / перемикач теми -->
+    <button id="themeToggle" class="theme-toggle" title="Перемкнути тему">⚙</button>
+
+    <!-- Firebase: Auth + Firestore (коментарі) + логіка теми -->
     <script type="module">
       import { initializeApp } from 'https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js';
       import {
@@ -330,6 +412,8 @@
       const commentText  = document.getElementById('commentText');
       const commentInfo  = document.getElementById('commentInfo');
 
+      const themeToggleBtn = document.getElementById('themeToggle');
+
       const DEFAULT_AVATAR   = "https://learn.logikaschool.com/uploads/student/4796102/692acc8996fdc.png";
       const DAVYD3102_AVATAR = "https://learn.logikaschool.com/uploads/student/4796102/692acfc896c23.png";
       const EXTRA_AVATAR     = "https://learn.logikaschool.com/uploads/student/4796102/692b12eb74937.png";
@@ -366,7 +450,7 @@
         }
       }
 
-      // Слухаємо зміну стану авторизації
+      // --- Auth: слідкуємо за станом користувача ---
       onAuthStateChanged(auth, (user) => {
         if (user && user.displayName) {
           const name = user.displayName;
@@ -456,7 +540,7 @@
         }
       );
 
-      // Надсилання коментаря (тільки для дозволених нікнеймів)
+      // Надсилання коментаря (тільки для davyd3102 / 3102)
       if (commentForm) {
         commentForm.addEventListener('submit', async (e) => {
           e.preventDefault();
@@ -480,6 +564,27 @@
             console.error(err);
             alert("Не вдалося надіслати коментар: " + err.message);
           }
+        });
+      }
+
+      // --- ТЕМА (світла/темна) з localStorage ---
+      function applyTheme(theme) {
+        if (theme === 'dark') {
+          document.body.classList.add('dark-theme');
+        } else {
+          document.body.classList.remove('dark-theme');
+        }
+      }
+
+      const savedTheme = localStorage.getItem('pineTheme') || 'light';
+      applyTheme(savedTheme);
+
+      if (themeToggleBtn) {
+        themeToggleBtn.addEventListener('click', () => {
+          const isDark = document.body.classList.contains('dark-theme');
+          const newTheme = isDark ? 'light' : 'dark';
+          applyTheme(newTheme);
+          localStorage.setItem('pineTheme', newTheme);
         });
       }
     </script>
