@@ -5,385 +5,138 @@
     <title>PINE Tycoon</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <!-- Основні стилі сайту -->
+    <!-- Якщо в тебе є свій style.css – залишай -->
     <link rel="stylesheet" href="style.css">
 
-    <!-- Додаткові стилі: сніг + пошук користувачів + анімації + оновлення + налаштування + темна тема -->
     <style>
-      /* Сніговий ефект (сині сніжинки) */
-      .snowflake {
-        position: fixed;
-        top: -10px;
-        color: #66c7ff;              /* синій колір сніжинок */
-        font-size: 14px;
-        pointer-events: none;        /* щоб сніг не блокував кліки */
-        z-index: 200;                /* нижче за кнопки Sign in / Sign up (там 1000) */
-        animation-name: snow-fall;
-        animation-timing-function: linear;
-        animation-iteration-count: 1;
-        text-shadow: 0 0 4px rgba(0, 0, 0, 0.35);
-      }
-
-      @keyframes snow-fall {
-        0% {
-          transform: translateY(-10vh);
-        }
-        100% {
-          transform: translateY(110vh);
-        }
-      }
-
-      /* Пошук користувачів */
-      .user-search {
-        margin: 20px 0;
-        max-width: 400px;
-        animation: fade-in-up 0.8s ease-out;
-      }
-
-      .user-search h2 {
-        margin: 0 0 8px 0;
-        font-size: 20px;
-        color: rgb(56, 56, 55);
-      }
-
-      .user-search form {
+      body {
+        margin: 0;
+        font-family: Arial, sans-serif;
+        background: #f4f4f4;
+        color: #333;
         display: flex;
-        gap: 8px;
-        margin-bottom: 10px;
+        flex-direction: column;
+        min-height: 100vh;
       }
 
-      .user-search input {
-        flex: 1;
-        padding: 6px 10px;
-        font-size: 14px;
+      header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px 20px;
+        background: #ffffff;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.08);
       }
 
-      .user-search button {
+      .logo {
+        font-weight: 700;
+        font-size: 20px;
+      }
+
+      nav a {
+        margin-right: 10px;
+        text-decoration: none;
+        color: #333;
+      }
+
+      .auth-buttons a,
+      .auth-buttons button {
+        margin-left: 8px;
         padding: 6px 12px;
         font-size: 14px;
-        background-color: rgb(56, 56, 55);
-        color: #fff;
-        border: none;
         border-radius: 4px;
+        border: 1px solid #333;
+        background: #fff;
+        color: #333;
+        text-decoration: none;
         cursor: pointer;
-        transition: transform 0.15s ease, box-shadow 0.15s ease, opacity 0.15s ease;
       }
 
-      .user-search button:hover {
-        opacity: 0.9;
-        transform: translateY(-1px);
-        box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+      .auth-buttons button {
+        border: 1px solid #c00;
+        color: #c00;
       }
 
-      .user-search-result {
-        font-size: 14px;
-        background: #ffffff;
-        border-radius: 8px;
-        padding: 10px;
-        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-        min-height: 24px;
-        animation: fade-in 0.3s ease-out;
+      main {
+        flex: 1;
+        padding: 20px;
+        max-width: 900px;
+        margin: 0 auto;
       }
 
-      .user-search-result .profile-card {
+      .welcome-text {
+        font-size: 18px;
+        margin-bottom: 10px;
+        font-weight: 600;
+      }
+
+      .user-panel {
         display: flex;
         align-items: center;
-        gap: 10px;
+        gap: 12px;
+        padding: 10px 14px;
+        border-radius: 10px;
+        background: #ffffff;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+        margin-bottom: 20px;
       }
 
-      .user-search-result img.profile-avatar {
+      .user-avatar {
         width: 48px;
         height: 48px;
         border-radius: 50%;
         object-fit: cover;
-        animation: float-avatar 3s ease-in-out infinite;
       }
 
-      .user-search-result .name {
-        font-weight: 600;
-        color: rgb(56, 56, 55);
-      }
-
-      .user-search-result .status {
-        font-size: 13px;
-      }
-
-      .user-search-result .status.online {
-        color: green;
-      }
-
-      .user-search-result .status.offline {
-        color: #999;
-      }
-
-      .user-search-result .not-found {
-        color: #555;
-      }
-
-      /* Анімації для привітання, акаунта і картинки гри */
-      .welcome-text {
-        animation: fade-in-down 0.6s ease-out;
-      }
-
-      .user-panel {
-        animation: slide-in-left 0.6s ease-out;
-      }
-
-      .main-logo {
-        animation: fade-in-up 0.8s ease-out;
-        transition: transform 0.2s ease, box-shadow 0.2s ease;
-      }
-
-      .main-logo:hover {
-        transform: scale(1.02);
-        box-shadow: 0 8px 20px rgba(0,0,0,0.2);
-      }
-
-      /* Блок оновлення у блозі */
-      .update-box {
-        margin-top: 15px;
-        padding: 12px 16px;
-        max-width: 600px;
-        background: #ffffff;
-        border-radius: 10px;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-        border-left: 4px solid #66c7ff;
-        animation: fade-in 0.7s ease-out;
-      }
-
-      .update-box h2 {
-        margin-top: 0;
-        margin-bottom: 6px;
-        font-size: 22px;
-        color: rgb(56, 56, 55);
-      }
-
-      .update-box .update-version {
-        font-size: 13px;
-        color: #777;
-        margin-bottom: 8px;
-      }
-
-      .update-box ul {
-        padding-left: 18px;
-        margin: 8px 0;
-      }
-
-      .update-box li {
-        margin-bottom: 4px;
-        font-size: 14px;
-      }
-
-      /* Кнопка налаштувань у правому нижньому куті */
-      .settings-button {
-        position: fixed;
-        right: 20px;
-        bottom: 20px;
-        width: 44px;
-        height: 44px;
-        border-radius: 50%;
-        background-color: rgb(56, 56, 55);
-        color: #ffffff;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        cursor: pointer;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.3);
-        z-index: 950;
-        font-size: 20px;
-        transition: transform 0.15s ease, opacity 0.15s ease;
-      }
-
-      .settings-button:hover {
-        opacity: 0.9;
-        transform: translateY(-1px);
-      }
-
-      .settings-panel {
-        position: fixed;
-        right: 20px;
-        bottom: 70px;
-        background-color: #ffffff;
-        color: #333333;
-        padding: 10px 14px;
-        border-radius: 10px;
-        box-shadow: 0 2px 10px rgba(0,0,0,0.2);
-        z-index: 940;
-        font-size: 14px;
-        display: none;
-        min-width: 170px;
-      }
-
-      .settings-panel-title {
-        font-weight: 600;
-        margin-bottom: 6px;
-      }
-
-      .settings-panel button {
-        margin-top: 4px;
-        padding: 6px 10px;
-        font-size: 13px;
-        background-color: rgb(56, 56, 55);
-        color: #ffffff;
-        border: none;
-        border-radius: 4px;
-        cursor: pointer;
-        width: 100%;
-      }
-
-      .settings-panel button:hover {
-        opacity: 0.9;
-      }
-
-      /* Ключові кадри */
-      @keyframes fade-in {
-        from { opacity: 0; }
-        to   { opacity: 1; }
-      }
-
-      @keyframes fade-in-up {
-        from {
-          opacity: 0;
-          transform: translateY(10px);
-        }
-        to {
-          opacity: 1;
-          transform: translateY(0);
-        }
-      }
-
-      @keyframes fade-in-down {
-        from {
-          opacity: 0;
-          transform: translateY(-10px);
-        }
-        to {
-          opacity: 1;
-          transform: translateY(0);
-        }
-      }
-
-      @keyframes slide-in-left {
-        from {
-          opacity: 0;
-          transform: translateX(-15px);
-        }
-        to {
-          opacity: 1;
-          transform: translateX(0);
-        }
-      }
-
-      @keyframes float-avatar {
-        0%   { transform: translateY(0); }
-        50%  { transform: translateY(-3px); }
-        100% { transform: translateY(0); }
-      }
-
-      /* ===== Темна тема ===== */
-      body.dark-theme {
-        background-color: rgb(69, 61, 61); /* твій колір */
-        color: #ffffff;
-      }
-
-      body.dark-theme .welcome-text,
-      body.dark-theme h1,
-      body.dark-theme h2,
-      body.dark-theme p,
-      body.dark-theme .user-name-label,
-      body.dark-theme .user-name-value {
-        color: #ffffff;
-      }
-
-      body.dark-theme footer {
-        background-color: rgb(48, 42, 42);
-      }
-
-      body.dark-theme .side-nav a {
-        background-color: rgb(48, 42, 42);
-      }
-
-      body.dark-theme .auth-buttons a {
-        background-color: rgb(48, 42, 42);
-        color: #ffffff;
-        border-color: #ffffff;
-      }
-
-      body.dark-theme .auth-buttons a.signup {
-        background-color: transparent;
-      }
-
-      body.dark-theme .update-box,
-      body.dark-theme .user-search-result {
-        background-color: #4d4444;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.6);
-      }
-
-      body.dark-theme .update-box .update-version {
-        color: #dddddd;
-      }
-
-      body.dark-theme .settings-panel {
-        background-color: #4d4444;
-        color: #ffffff;
-      }
-
-      body.dark-theme .settings-panel button {
-        background-color: #383232;
+      footer {
+        text-align: center;
+        padding: 10px;
+        background: #383837;
+        color: #fff;
       }
     </style>
   </head>
 
-  <body class="has-sidebar">
+  <body>
     <header>
-      <!-- Кнопки входу / реєстрації справа вгорі -->
+      <div class="logo">PINE Tycoon</div>
+
+      <nav>
+        <a href="game.html">Грати!</a>
+        <a href="#blog">Блог</a>
+      </nav>
+
       <div class="auth-buttons">
-        <a href="login.html" class="signin">Sign in</a>
-        <a href="signup.html" class="signup">Sign up</a>
+        <!-- Кнопки аутентифікації -->
+        <a href="login.html" id="loginLink">Sign in</a>
+        <a href="signup.html" id="signupLink">Sign up</a>
+        <button id="logoutBtn" style="display:none;">Log out</button>
       </div>
     </header>
 
-    <!-- Бокове меню з анімацією зліва -->
-    <nav class="side-nav">
-      <a href="game.html" class="about">Грати!</a>
-      <a href="#blog" class="blog">Блог</a>
-    </nav>
-
     <main>
-      <!-- Привітання -->
+      <!-- Привітання + акаунт -->
       <p class="welcome-text" id="welcomeText">Welcome Guest</p>
 
-      <!-- Блок акаунта -->
       <div class="user-panel">
-        <img 
-          src="https://learn.logikaschool.com/uploads/student/4796102/692acc8996fdc.png" 
-          alt="Аватар" 
+        <img
+          src="https://learn.logikaschool.com/uploads/student/4796102/692acc8996fdc.png"
+          alt="Аватар"
           class="user-avatar"
-        >
+        />
         <div>
-          <div class="user-name-label">Акаунт:</div>
-          <div class="user-name-value" id="userNameDisplay">Гість</div>
+          <div><strong>Акаунт:</strong></div>
+          <div id="userNameDisplay">Гість</div>
         </div>
       </div>
 
-      <!-- Пошук інших користувачів -->
-      <section class="user-search">
-        <h2>Пошук гравця</h2>
-        <form id="userSearchForm">
-          <input type="text" id="userSearchInput" placeholder="Введіть нік користувача">
-          <button type="submit">Знайти</button>
-        </form>
-        <div id="userSearchResult" class="user-search-result"></div>
-      </section>
-
-      <!-- Картинка гри -->
-      <img 
-        src="https://learn.logikaschool.com/uploads/student/4796102/6929d42d4c366.png" 
-        alt="PINE Tycoon" 
-        class="main-logo"
+      <!-- Основний текст -->
+      <img
+        src="https://learn.logikaschool.com/uploads/student/4796102/6929d42d4c366.png"
+        alt="PINE Tycoon"
+        style="max-width:60%;border-radius:20px;display:block;margin-bottom:20px;"
       />
 
-      <p class="inf"></p>
       <p>
         Ласкаво просимо до затишного місця "PINE Tycoon". У цій грі вам потрібно
         рубати дрова та будувати своє власне затишне село!
@@ -392,206 +145,93 @@
         Ця версія гри не фінальна, тому може бути багато багів і гра може змінитися з часом.
       </p>
 
-      <h1 id="blog">
-        БЛОГ
-      </h1>
-      <p>
-        Поки що тут пусто... але ми вже працюємо над новими оновленнями ❄
-      </p>
-
-      <!-- Блок про оновлення з системою акаунтів -->
-      <section class="update-box">
-        <h2>Оновлення: система акаунтів</h2>
-        <div class="update-version">Версія 0.2 — зимове оновлення PINE Tycoon</div>
-        <p>
-          У цій версії гри ми додали базову систему акаунтів прямо на сайті:
-        </p>
-        <ul>
-          <li>Можна створити свій акаунт через <strong>Sign up</strong> з ніком та паролем.</li>
-          <li>Увійти в гру через <strong>Sign in</strong> і побачити привітання <strong>Welcome Ім’я</strong>.</li>
-          <li>Для гостя показується статус <strong>Welcome Guest</strong>.</li>
-          <li>Нікнейми зберігаються в браузері, тому користувачі не можуть створювати однакові імена на цьому пристрої.</li>
-          <li>Спеціальний аватар для власника акаунта <strong>davyd3102</strong>.</li>
-          <li>Додано особливий аватар для гравців <strong>3102</strong>, <strong>Cool dave</strong> та <strong>davyd</strong>.</li>
-          <li>Є пошук гравців: можна знайти нік і побачити, чи він зараз онлайн у цьому браузері.</li>
-        </ul>
-        <p>
-          Це тільки перший крок до повноцінної системи профілів PINE Tycoon 🌲
-        </p>
-      </section>
+      <h1 id="blog">БЛОГ</h1>
+      <p>Поки що тут пусто... але ми вже працюємо над новими оновленнями ❄</p>
     </main>
 
     <footer>
       © 2025 PINE Tycoon — бета-версія гри
     </footer>
 
-    <!-- Кнопка і панель налаштувань -->
-    <div class="settings-button" id="settingsButton">⚙</div>
-    <div class="settings-panel" id="settingsPanel">
-      <div class="settings-panel-title">Налаштування</div>
-      <button id="themeToggleBtn">Тема: світла</button>
-    </div>
-
-    <!-- Скрипт: акаунти + аватар + Welcome + пошук + тема -->
-    <script>
-     const DEFAULT_AVATAR = "https://learn.logikaschool.com/uploads/student/4796102/692acc8996fdc.png";
-const DAVYD3102_AVATAR = "https://learn.logikaschool.com/uploads/student/4796102/692acfc896c23.png";
-const EXTRA_AVATAR = "https://learn.logikaschool.com/uploads/student/4796102/692b12eb74937.png";
-const GRIVIELD_AVATAR = "https://learn.logikaschool.com/uploads/student/4796102/692b1a155937b.png";
-
-
-      function getUsers() {
-        const raw = localStorage.getItem("pineUsers");
-        if (!raw) return {};
-        try {
-          const obj = JSON.parse(raw);
-          return obj && typeof obj === "object" ? obj : {};
-        } catch (e) {
-          return {};
-        }
-      }
-
-      // Вибір аватара за ніком
-      function getAvatarForName(name) {
-  const map = {
-    "davyd3102": DAVYD3102_AVATAR,
-    "3102": EXTRA_AVATAR,
-    "Cool dave": EXTRA_AVATAR,
-    "davyd": EXTRA_AVATAR,
-    "Grivield": GRIVIELD_AVATAR
+    <!-- Firebase: підключення й відображення Welcome -->
+    <script type="module">
+  // Import the functions you need from the SDKs you need
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js";
+  import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-analytics.js";
+  ...
+  const firebaseConfig = {
+    apiKey: "...",
+    authDomain: "pine-tycoon.firebaseapp.com",
+    projectId: "pine-tycoon",
+    storageBucket: "pine-tycoon.firebasestorage.app",
+    messagingSenderId: "949986190236",
+    appId: "1:949986190236:web:4f5d50078326f5c1981e59",
+    measurementId: "G-2DY6KSY4G7"
   };
-  return map[name] || DEFAULT_AVATAR;
-}
 
-      const nameDisplay = document.getElementById("userNameDisplay");
-      const welcomeText = document.getElementById("welcomeText");
-      const avatarImg   = document.querySelector(".user-avatar");
+  const app = initializeApp(firebaseConfig);
+  const analytics = getAnalytics(app);
+</script>
 
-      const currentName = localStorage.getItem("pineUserName");
-      const users       = getUsers();
 
-      let nameToShow = "Guest";
-      if (currentName && users[currentName]) {
-        nameToShow = currentName;
+      const app  = initializeApp(firebaseConfig);
+      const auth = getAuth(app);
+
+      const welcomeText = document.getElementById('welcomeText');
+      const userNameDisplay = document.getElementById('userNameDisplay');
+      const avatarImg = document.querySelector('.user-avatar');
+
+      const loginLink  = document.getElementById('loginLink');
+      const signupLink = document.getElementById('signupLink');
+      const logoutBtn  = document.getElementById('logoutBtn');
+
+      const DEFAULT_AVATAR      = "https://learn.logikaschool.com/uploads/student/4796102/692acc8996fdc.png";
+      const DAVYD3102_AVATAR    = "https://learn.logikaschool.com/uploads/student/4796102/692acfc896c23.png";
+      const EXTRA_AVATAR        = "https://learn.logikaschool.com/uploads/student/4796102/692b12eb74937.png";
+      const GRIVIELD_AVATAR     = "https://learn.logikaschool.com/uploads/student/4796102/692b1a155937b.png";
+
+      function getAvatarForName(name) {
+        const map = {
+          "davyd3102": DAVYD3102_AVATAR,
+          "3102": EXTRA_AVATAR,
+          "Cool dave": EXTRA_AVATAR,
+          "davyd": EXTRA_AVATAR,
+          "Grivield": GRIVIELD_AVATAR
+        };
+        return map[name] || DEFAULT_AVATAR;
       }
 
-      if (nameToShow === "Guest") {
-        nameDisplay.textContent = "Гість";
-        welcomeText.textContent = "Welcome Guest";
-      } else {
-        nameDisplay.textContent = nameToShow;
-        welcomeText.textContent = "Welcome " + nameToShow;
-      }
+      // Слухаємо зміну стану авторизації
+      onAuthStateChanged(auth, (user) => {
+        if (user && user.displayName) {
+          const name = user.displayName;
+          welcomeText.textContent   = "Welcome " + name;
+          userNameDisplay.textContent = name;
+          avatarImg.src = getAvatarForName(name);
 
-      avatarImg.src = getAvatarForName(nameToShow);
-
-      // ---- Пошук користувачів ----
-      const searchForm   = document.getElementById("userSearchForm");
-      const searchInput  = document.getElementById("userSearchInput");
-      const searchResult = document.getElementById("userSearchResult");
-
-      if (searchForm) {
-        searchForm.addEventListener("submit", function (e) {
-          e.preventDefault();
-          const query = searchInput.value.trim();
-          if (!query) {
-            searchResult.innerHTML = '<p class="not-found">Введіть нік для пошуку.</p>';
-            return;
-          }
-
-          const user = users[query];
-          if (!user) {
-            searchResult.innerHTML = '<p class="not-found">Користувача з таким ніком не знайдено (у цьому браузері).</p>';
-            return;
-          }
-
-          const isOnline = (currentName === query);
-          const avatarUrl = getAvatarForName(query);
-
-          searchResult.innerHTML = `
-            <div class="profile-card">
-              <img src="${avatarUrl}" alt="Аватар ${query}" class="profile-avatar">
-              <div>
-                <div class="name">${query}</div>
-                <div class="status ${isOnline ? 'online' : 'offline'}">
-                  ${isOnline ? 'Зараз онлайн' : 'Зараз офлайн (не активний у цьому браузері)'}
-                </div>
-              </div>
-            </div>
-          `;
-        });
-      }
-
-      // ---- ТЕМА: світла / темна ----
-      const THEME_KEY = "pineTheme";
-      const settingsButton = document.getElementById("settingsButton");
-      const settingsPanel = document.getElementById("settingsPanel");
-      const themeToggleBtn = document.getElementById("themeToggleBtn");
-
-      function applyTheme(theme) {
-        if (theme === "dark") {
-          document.body.classList.add("dark-theme");
+          loginLink.style.display  = "none";
+          signupLink.style.display = "none";
+          logoutBtn.style.display  = "inline-block";
         } else {
-          document.body.classList.remove("dark-theme");
+          welcomeText.textContent   = "Welcome Guest";
+          userNameDisplay.textContent = "Гість";
+          avatarImg.src = DEFAULT_AVATAR;
+
+          loginLink.style.display  = "inline-block";
+          signupLink.style.display = "inline-block";
+          logoutBtn.style.display  = "none";
         }
-      }
+      });
 
-      function updateThemeButton(theme) {
-        if (!themeToggleBtn) return;
-        themeToggleBtn.textContent = theme === "dark" ? "Тема: темна" : "Тема: світла";
-      }
-
-      // Застосувати тему при завантаженні
-      const savedTheme = localStorage.getItem(THEME_KEY) || "light";
-      applyTheme(savedTheme);
-      updateThemeButton(savedTheme);
-
-      // Показ / сховати панель
-      if (settingsButton && settingsPanel) {
-        settingsButton.addEventListener("click", () => {
-          const isVisible = settingsPanel.style.display === "block";
-          settingsPanel.style.display = isVisible ? "none" : "block";
-        });
-      }
-
-      // Перемикання теми
-      if (themeToggleBtn) {
-        themeToggleBtn.addEventListener("click", () => {
-          const isDark = document.body.classList.contains("dark-theme");
-          const newTheme = isDark ? "light" : "dark";
-          applyTheme(newTheme);
-          updateThemeButton(newTheme);
-          localStorage.setItem(THEME_KEY, newTheme);
-        });
-      }
-    </script>
-
-    <!-- Скрипт: снігопад (сині сніжинки) -->
-    <script>
-      function createSnowflake() {
-        const snowflake = document.createElement('div');
-        snowflake.classList.add('snowflake');
-        snowflake.textContent = '❄';
-
-        // випадкова позиція по ширині
-        snowflake.style.left = Math.random() * 100 + 'vw';
-        // випадковий розмір
-        snowflake.style.fontSize = (10 + Math.random() * 14) + 'px';
-        // випадкова прозорість
-        snowflake.style.opacity = (0.4 + Math.random() * 0.6).toString();
-        // випадкова тривалість падіння
-        snowflake.style.animationDuration = (5 + Math.random() * 5) + 's';
-
-        document.body.appendChild(snowflake);
-
-        // коли анімація закінчиться – видаляємо сніжинку
-        snowflake.addEventListener('animationend', () => {
-          snowflake.remove();
-        });
-      }
-
-      // створюємо нову сніжинку кожні 200 мс
-      setInterval(createSnowflake, 200);
+      // Вихід
+      logoutBtn.addEventListener('click', async () => {
+        try {
+          await signOut(auth);
+        } catch (err) {
+          console.error(err);
+          alert("Не вдалося вийти: " + err.message);
+        }
+      });
     </script>
   </body>
 </html>
