@@ -62,6 +62,59 @@
         color: #fff;
       }
 
+      /* --- Анімації входу на сайт --- */
+      @keyframes fade-down {
+        0% {
+          opacity: 0;
+          transform: translateY(-16px);
+        }
+        100% {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      @keyframes fade-up {
+        0% {
+          opacity: 0;
+          transform: translateY(16px);
+        }
+        100% {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      @keyframes fade-scale {
+        0% {
+          opacity: 0;
+          transform: scale(0.95);
+        }
+        100% {
+          opacity: 1;
+          transform: scale(1);
+        }
+      }
+
+      .fade-down {
+        opacity: 0;
+        animation: fade-down 0.5s ease-out forwards;
+      }
+
+      .fade-up {
+        opacity: 0;
+        animation: fade-up 0.6s ease-out forwards;
+      }
+
+      .fade-scale {
+        opacity: 0;
+        animation: fade-scale 0.5s ease-out forwards;
+      }
+
+      .delay-1 { animation-delay: 0.15s; }
+      .delay-2 { animation-delay: 0.3s; }
+      .delay-3 { animation-delay: 0.45s; }
+
       /* --- УНІВЕРСАЛЬНА КНОПКА (і для навігації, і для логіну) --- */
       .btn {
         display: inline-block;
@@ -291,7 +344,8 @@
   </head>
 
   <body>
-    <header>
+    <!-- header тепер анімовано з'являється зверху -->
+    <header class="fade-down">
       <!-- Ліва навігація (Грати / Блог) як гарні кнопки -->
       <nav class="main-nav">
         <a href="game.html" class="btn">Грати!</a>
@@ -307,10 +361,10 @@
     </header>
 
     <main>
-      <!-- Привітання + акаунт -->
-      <p class="welcome-text" id="welcomeText">Welcome Guest</p>
+      <!-- Привітання + акаунт (мʼяка поява) -->
+      <p class="welcome-text fade-up delay-1" id="welcomeText">Welcome Guest</p>
 
-      <div class="user-panel">
+      <div class="user-panel fade-scale delay-1">
         <img
           src="https://learn.logikaschool.com/uploads/student/4796102/692acc8996fdc.png"
           alt="Аватар"
@@ -322,27 +376,29 @@
         </div>
       </div>
 
-      <!-- Картинка гри -->
+      <!-- Картинка гри (плавно підʼїжджає знизу) -->
       <img
         src="https://learn.logikaschool.com/uploads/student/4796102/6929d42d4c366.png"
         alt="PINE Tycoon"
-        class="main-logo"
+        class="main-logo fade-up delay-2"
       />
 
-      <p class="inf"></p>
-      <p>
+      <p class="inf fade-up delay-2"></p>
+      <p class="fade-up delay-2">
         Ласкаво просимо до затишного місця "PINE Tycoon". У цій грі вам потрібно
         рубати дрова та будувати своє власне затишне село!
       </p>
-      <p>
+      <p class="fade-up delay-2">
         Ця версія гри не фінальна, тому може бути багато багів і гра може змінитися з часом.
       </p>
 
-      <h1 id="blog">БЛОГ</h1>
-      <p>Поки що тут пусто... але ми вже працюємо над новими оновленнями ❄</p>
+      <h1 id="blog" class="fade-up delay-2">БЛОГ</h1>
+      <p class="fade-up delay-2">
+        Поки що тут пусто... але ми вже працюємо над новими оновленнями ❄
+      </p>
 
-      <!-- СЕКЦІЯ КОМЕНТАРІВ -->
-      <section id="commentsSection">
+      <!-- СЕКЦІЯ КОМЕНТАРІВ (зʼявляється трішки пізніше) -->
+      <section id="commentsSection" class="fade-up delay-3">
         <h2>Коментарі</h2>
         <div id="commentsList">
           <p class="comment-empty">Завантаження коментарів...</p>
