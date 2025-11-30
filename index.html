@@ -120,7 +120,7 @@
     }
 
     main {
-      max-width: 900px;
+      max-width: 1000px;
       margin: 30px auto;
       padding: 0 15px 30px;
     }
@@ -280,7 +280,6 @@
     }
 
     /* Admin panel */
-
     #adminPanel {
       margin-top: 16px;
       padding: 10px 12px;
@@ -310,20 +309,36 @@
       font-size: 13px;
     }
 
-    /* Онлайн гравці */
+    /* Друзі + пошук */
+    .social-layout {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
 
-    #onlineList {
+    .search-block,
+    .friends-block {
+      flex: 1;
+      min-width: 260px;
+    }
+
+    #searchResults,
+    #friendsList,
+    #friendRequestsList {
       list-style: none;
       padding-left: 0;
       margin: 6px 0 0;
     }
 
-    #onlineList li {
-      font-size: 14px;
-      margin-bottom: 4px;
+    #searchResults li,
+    #friendsList li,
+    #friendRequestsList li {
       display: flex;
       align-items: center;
-      gap: 6px;
+      gap: 8px;
+      margin-bottom: 4px;
+      font-size: 14px;
+      flex-wrap: wrap;
     }
 
     .online-dot {
@@ -332,6 +347,33 @@
       border-radius: 50%;
       background: #95a5a6;
       flex-shrink: 0;
+    }
+
+    .small-btn {
+      padding: 3px 8px;
+      border-radius: 6px;
+      border: none;
+      font-size: 12px;
+      cursor: pointer;
+      background: #383837;
+      color: #fff;
+      transition:
+        background 0.2s ease,
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
+    }
+
+    .small-btn:hover {
+      background: #222;
+      transform: translateY(-1px) scale(1.03);
+      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+    }
+
+    .small-btn.danger {
+      background: #e74c3c;
+    }
+    .small-btn.danger:hover {
+      background: #c0392b;
     }
 
     footer {
@@ -378,28 +420,21 @@
           <h1>PINE Tycoon</h1>
           <p>
             Ласкаво просимо до зимового тайкуна, де ви рубаєте дерева, будуєте
-            дерев’яне село та намагаєтесь не замерзнути в заметілі 
+            дерев’яне село та намагаєтесь не замерзнути в заметілі 🌨️
           </p>
           <p class="status-box">
             Поточна версія: <b>1.0 – мультиплеєрна альфа</b><br />
-            Додано: систему акаунтів, синхронізацію гравців та базовий мультиплеєр.
+            Додано: систему акаунтів, друзів, мультиплеєр та індикатор онлайн.
           </p>
         </div>
       </div>
     </section>
 
-    <!-- Гравці онлайн -->
-    <section class="card" id="onlineCard">
-      <h2>Гравці онлайн</h2>
-      <p id="onlineSummary" class="small-text">Завантаження...</p>
-      <ul id="onlineList"></ul>
-    </section>
-
-    <!-- Блок для реєстрації / входу -->
+    <!-- Акаунти -->
     <section class="card" id="authCard">
       <h2>Акаунт</h2>
       <p class="small-text">
-        Створи акаунт, щоб грати під своїм ім’ям у мультиплеєрі, а також у майбутньому залишати коментарі, додавати друзів тощо.
+        Створи акаунт, щоб грати під своїм ім’ям у мультиплеєрі, додавати друзів та бачити, хто онлайн.
       </p>
 
       <div class="auth-forms">
@@ -447,7 +482,7 @@
       <h2>Привіт, <span id="welcomeName">гравцю</span>!</h2>
       <p>
         Ти увійшов у систему. Тепер, коли ти запускаєш гру
-        через кнопку <b>Грати!</b>, мультиплеєр зможе розпізнати твоє ім’я.
+        через кнопку <b>Грати!</b>, мультиплеєр розпізнає твоє ім’я.
       </p>
 
       <!-- Адмін-панель лише для davyd3102 -->
@@ -468,15 +503,40 @@
       </div>
     </section>
 
+    <!-- Друзі + пошук -->
+    <section class="card" id="socialCard">
+      <h2>Гравці та друзі</h2>
+      <div class="social-layout">
+        <div class="search-block">
+          <h3>Пошук гравців</h3>
+          <p class="small-text">Введи нік точно (наприклад: <b>3102</b>).</p>
+          <div style="display:flex; gap:6px; margin-bottom:4px;">
+            <input type="text" id="searchNameInput" placeholder="Введіть нікнейм" style="flex:1;">
+            <button id="searchBtn" class="small-btn">Знайти</button>
+          </div>
+          <p id="searchSummary" class="small-text">Ще нікого не шукали.</p>
+          <ul id="searchResults"></ul>
+        </div>
+
+        <div class="friends-block">
+          <h3>Друзі</h3>
+          <p id="friendRequestsSummary" class="small-text">Запитів у друзі немає.</p>
+          <ul id="friendRequestsList"></ul>
+          <h4 style="margin-top:10px;">Список друзів</h4>
+          <ul id="friendsList"></ul>
+        </div>
+      </div>
+    </section>
+
     <!-- Блог -->
     <section class="card blog-section" id="blog">
       <h2>Блог</h2>
       <p><i>Останнє оновлення:</i></p>
       <ul>
         <li>Додано систему акаунтів на Firebase.</li>
+        <li>Додано друзів, пошук гравців та індикатор онлайн у списку друзів і пошуку.</li>
         <li>Підключено мультиплеєр між гравцями (перша альфа).</li>
-        <li>Підготовлено адмін-панель для <b>davyd3102</b> ✨</li>
-        <li>Додано снігову анімацію та відображення гравців онлайн.</li>
+        <li>Додано снігову анімацію та плавні переходи.</li>
       </ul>
       <p>Незабаром тут з’являться нотатки про розробку, зміни балансу та нові будівлі.</p>
     </section>
@@ -486,14 +546,14 @@
     © 2025 PINE Tycoon — бета-версія гри з мультиплеєром
   </footer>
 
-  <!-- Firebase + логіка акаунтів, адмінки, онлайн-статусу і снігу -->
+  <!-- Firebase + логіка акаунтів, друзів, адмінки, онлайн-статусу і снігу -->
   <script type="module">
-    // Анімація появи сторінки
+    /* Анімація появи */
     window.addEventListener("load", () => {
       document.body.classList.add("loaded");
     });
 
-    // Синій сніг
+    /* Синій сніг */
     const snowCanvas = document.getElementById("snowCanvas");
     const snowCtx = snowCanvas.getContext("2d");
     let snowflakes = [];
@@ -504,7 +564,7 @@
       snowCanvas.height = window.innerHeight;
     }
 
-    function initSnow(count = 140) {
+    function initSnow(count = 150) {
       resizeSnow();
       snowflakes = [];
       for (let i = 0; i < count; i++) {
@@ -572,7 +632,8 @@
       where,
       deleteDoc,
       serverTimestamp,
-      onSnapshot
+      onSnapshot,
+      addDoc
     } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-firestore.js";
 
     const firebaseConfig = {
@@ -590,7 +651,7 @@
     const auth = getAuth(app);
     const db = getFirestore(app);
 
-    // DOM-елементи
+    // DOM
     const authCard     = document.getElementById("authCard");
     const loggedCard   = document.getElementById("loggedCard");
     const welcomeName  = document.getElementById("welcomeName");
@@ -618,8 +679,27 @@
     const deleteUserBtn    = document.getElementById("deleteUserBtn");
     const deleteUserStatus = document.getElementById("deleteUserStatus");
 
-    const onlineSummary = document.getElementById("onlineSummary");
-    const onlineListEl  = document.getElementById("onlineList");
+    const searchNameInput  = document.getElementById("searchNameInput");
+    const searchBtn        = document.getElementById("searchBtn");
+    const searchSummary    = document.getElementById("searchSummary");
+    const searchResultsEl  = document.getElementById("searchResults");
+
+    const friendRequestsSummary = document.getElementById("friendRequestsSummary");
+    const friendRequestsList    = document.getElementById("friendRequestsList");
+    const friendsListEl         = document.getElementById("friendsList");
+
+    // Стан
+    let currentUser = null;
+    let friendsUnsub = null;
+    let incomingReqUnsub = null;
+    let outgoingReqUnsub = null;
+
+    let onlineMap = new Map();           // uid -> { online: bool }
+    let friendsData = [];                // { uid, name }
+    let incomingRequestsData = [];       // { id, fromUid, fromName }
+    let outgoingRequestsSet = new Set(); // toUid
+    let lastSearchResults = [];          // { uid, name }
+    const MAX_INACTIVE_MS = 30000;       // 30 секунд
 
     // Показати/сховати блок авторизації по кнопці в хедері
     if (showAuthBtn) {
@@ -632,7 +712,224 @@
       });
     }
 
-    // Реєстрація
+    // -------- Функції рендеру --------
+    function renderFriends() {
+      friendsListEl.innerHTML = "";
+      friendRequestsList.innerHTML = "";
+
+      if (!currentUser) {
+        friendRequestsSummary.textContent = "Увійди, щоб бачити запити та друзів.";
+        const li = document.createElement("li");
+        li.className = "small-text";
+        li.textContent = "Увійди, щоб бачити друзів.";
+        friendsListEl.appendChild(li);
+        return;
+      }
+
+      // Запити
+      if (incomingRequestsData.length === 0) {
+        friendRequestsSummary.textContent = "Запитів у друзі немає.";
+      } else {
+        friendRequestsSummary.textContent = "Запити у друзі:";
+        incomingRequestsData.forEach(req => {
+          const li = document.createElement("li");
+
+          const nameSpan = document.createElement("span");
+          nameSpan.textContent = req.fromName;
+          li.appendChild(nameSpan);
+
+          const acceptBtn = document.createElement("button");
+          acceptBtn.className = "small-btn";
+          acceptBtn.textContent = "Прийняти";
+          acceptBtn.addEventListener("click", () => acceptFriendRequest(req));
+          li.appendChild(acceptBtn);
+
+          const rejectBtn = document.createElement("button");
+          rejectBtn.className = "small-btn danger";
+          rejectBtn.textContent = "Відхилити";
+          rejectBtn.addEventListener("click", () => rejectFriendRequest(req));
+          li.appendChild(rejectBtn);
+
+          friendRequestsList.appendChild(li);
+        });
+      }
+
+      // Друзі
+      if (friendsData.length === 0) {
+        const li = document.createElement("li");
+        li.className = "small-text";
+        li.textContent = "Поки що друзів немає.";
+        friendsListEl.appendChild(li);
+      } else {
+        friendsData.forEach(f => {
+          const li = document.createElement("li");
+          const dot = document.createElement("span");
+          dot.className = "online-dot";
+
+          const entry = onlineMap.get(f.uid);
+          const online = entry && entry.online;
+          dot.style.backgroundColor = online ? "#2ecc71" : "#95a5a6";
+
+          li.appendChild(dot);
+          const text = document.createTextNode(
+            " " + f.name + (online ? " — онлайн" : " — офлайн")
+          );
+          li.appendChild(text);
+
+          friendsListEl.appendChild(li);
+        });
+      }
+    }
+
+    function renderSearchResults(results) {
+      if (results) {
+        lastSearchResults = results;
+      }
+      const list = lastSearchResults || [];
+      searchResultsEl.innerHTML = "";
+
+      if (!currentUser) {
+        searchSummary.textContent = "Увійди, щоб шукати гравців.";
+        return;
+      }
+
+      if (list.length === 0) {
+        searchSummary.textContent = "Нікого не знайдено.";
+        return;
+      }
+
+      searchSummary.textContent = "Знайдені гравці:";
+
+      list.forEach(u => {
+        const li = document.createElement("li");
+
+        const dot = document.createElement("span");
+        dot.className = "online-dot";
+        const entry = onlineMap.get(u.uid);
+        const online = entry && entry.online;
+        dot.style.backgroundColor = online ? "#2ecc71" : "#95a5a6";
+        li.appendChild(dot);
+
+        const nameSpan = document.createElement("span");
+        nameSpan.textContent = " " + u.name;
+        li.appendChild(nameSpan);
+
+        if (u.uid === currentUser.uid) {
+          const span = document.createElement("span");
+          span.className = "small-text";
+          span.textContent = " (це ти)";
+          li.appendChild(span);
+        } else if (friendsData.some(f => f.uid === u.uid)) {
+          const span = document.createElement("span");
+          span.className = "small-text";
+          span.textContent = " (вже у друзях)";
+          li.appendChild(span);
+        } else if (outgoingRequestsSet.has(u.uid)) {
+          const span = document.createElement("span");
+          span.className = "small-text";
+          span.textContent = " (запит надіслано)";
+          li.appendChild(span);
+        } else if (incomingRequestsData.some(r => r.fromUid === u.uid)) {
+          const span = document.createElement("span");
+          span.className = "small-text";
+          span.textContent = " (цей гравець надіслав тобі запит)";
+          li.appendChild(span);
+        } else {
+          const btn = document.createElement("button");
+          btn.className = "small-btn";
+          btn.textContent = "Додати в друзі";
+          btn.addEventListener("click", () => sendFriendRequest(u));
+          li.appendChild(btn);
+        }
+
+        searchResultsEl.appendChild(li);
+      });
+    }
+
+    // -------- Дії з друзями --------
+    async function sendFriendRequest(userRec) {
+      if (!currentUser) return;
+      try {
+        await addDoc(collection(db, "friendRequests"), {
+          fromUid: currentUser.uid,
+          fromName: currentUser.displayName || "Гравець",
+          toUid: userRec.uid,
+          toName: userRec.name,
+          createdAt: serverTimestamp()
+        });
+      } catch (err) {
+        console.error(err);
+      }
+    }
+
+    async function acceptFriendRequest(req) {
+      if (!currentUser) return;
+      try {
+        const pairId = [req.fromUid, currentUser.uid].sort().join("_");
+        const friendsRef = doc(db, "friends", pairId);
+        const currentName = currentUser.displayName || "Гравець";
+        await setDoc(friendsRef, {
+          users: [req.fromUid, currentUser.uid],
+          names: [req.fromName, currentName],
+          createdAt: serverTimestamp()
+        });
+
+        await deleteDoc(doc(db, "friendRequests", req.id));
+      } catch (err) {
+        console.error(err);
+      }
+    }
+
+    async function rejectFriendRequest(req) {
+      if (!currentUser) return;
+      try {
+        await deleteDoc(doc(db, "friendRequests", req.id));
+      } catch (err) {
+        console.error(err);
+      }
+    }
+
+    // -------- Пошук гравців --------
+    if (searchBtn) {
+      searchBtn.addEventListener("click", async () => {
+        if (!currentUser) {
+          searchSummary.textContent = "Увійди, щоб шукати гравців.";
+          return;
+        }
+
+        const name = (searchNameInput.value || "").trim();
+        if (!name) {
+          searchSummary.textContent = "Введи нікнейм для пошуку.";
+          searchResultsEl.innerHTML = "";
+          return;
+        }
+
+        searchSummary.textContent = "Шукаю...";
+        searchResultsEl.innerHTML = "";
+
+        try {
+          const usersRef = collection(db, "users");
+          const q = query(usersRef, where("name", "==", name));
+          const snap = await getDocs(q);
+
+          const results = [];
+          snap.forEach(docSnap => {
+            const data = docSnap.data() || {};
+            results.push({
+              uid: docSnap.id,
+              name: data.name || "Гравець"
+            });
+          });
+
+          renderSearchResults(results);
+        } catch (err) {
+          console.error(err);
+          searchSummary.textContent = "Помилка пошуку.";
+        }
+      });
+    }
+
+    // -------- Реєстрація --------
     if (signupForm) {
       signupForm.addEventListener("submit", async (e) => {
         e.preventDefault();
@@ -667,7 +964,7 @@
       });
     }
 
-    // Вхід
+    // -------- Вхід --------
     if (loginForm) {
       loginForm.addEventListener("submit", async (e) => {
         e.preventDefault();
@@ -687,7 +984,7 @@
       });
     }
 
-    // Вихід
+    // -------- Вихід --------
     if (logoutBtn) {
       logoutBtn.addEventListener("click", async () => {
         try {
@@ -698,8 +995,20 @@
       });
     }
 
-    // onAuthStateChanged — оновлюємо UI + адмін-панель
+    // -------- onAuthStateChanged --------
     onAuthStateChanged(auth, (user) => {
+      // Відписуємося від попередніх
+      if (friendsUnsub) { friendsUnsub(); friendsUnsub = null; }
+      if (incomingReqUnsub) { incomingReqUnsub(); incomingReqUnsub = null; }
+      if (outgoingReqUnsub) { outgoingReqUnsub(); outgoingReqUnsub = null; }
+
+      currentUser = user || null;
+      friendsData = [];
+      incomingRequestsData = [];
+      outgoingRequestsSet = new Set();
+      renderFriends();
+      renderSearchResults([]);
+
       if (user) {
         const name = user.displayName || "Гравець";
         welcomeName.textContent = name;
@@ -719,17 +1028,73 @@
         } else {
           adminPanel.classList.add("hidden");
         }
+
+        // Слухаємо друзів
+        friendsUnsub = onSnapshot(
+          query(collection(db, "friends"), where("users", "array-contains", user.uid)),
+          (snapshot) => {
+            friendsData = [];
+            snapshot.forEach(docSnap => {
+              const data = docSnap.data() || {};
+              const usersArr = data.users || [];
+              const namesArr = data.names || [];
+              const idx = usersArr.indexOf(user.uid);
+              if (idx === -1) return;
+              const otherIndex = idx === 0 ? 1 : 0;
+              const friendUid = usersArr[otherIndex];
+              const friendName = namesArr[otherIndex] || "Гравець";
+              friendsData.push({ uid: friendUid, name: friendName });
+            });
+            renderFriends();
+            renderSearchResults(); // оновимо стани "вже у друзях"
+          }
+        );
+
+        // Вхідні запити
+        incomingReqUnsub = onSnapshot(
+          query(collection(db, "friendRequests"), where("toUid", "==", user.uid)),
+          (snapshot) => {
+            incomingRequestsData = [];
+            snapshot.forEach(docSnap => {
+              const data = docSnap.data() || {};
+              incomingRequestsData.push({
+                id: docSnap.id,
+                fromUid: data.fromUid,
+                fromName: data.fromName || "Гравець"
+              });
+            });
+            renderFriends();
+            renderSearchResults();
+          }
+        );
+
+        // Вихідні запити
+        outgoingReqUnsub = onSnapshot(
+          query(collection(db, "friendRequests"), where("fromUid", "==", user.uid)),
+          (snapshot) => {
+            outgoingRequestsSet = new Set();
+            snapshot.forEach(docSnap => {
+              const data = docSnap.data() || {};
+              if (data.toUid) {
+                outgoingRequestsSet.add(data.toUid);
+              }
+            });
+            renderSearchResults();
+          }
+        );
       } else {
         authButtons.classList.remove("hidden");
         userInfo.classList.add("hidden");
         loggedCard.classList.add("hidden");
+        // authCard можна показувати, щоб одразу бачити форми
+        authCard.classList.remove("hidden");
       }
     });
 
-    // Admin-panel: видалити користувача
+    // -------- Admin-panel: видалити користувача --------
     if (deleteUserBtn) {
       deleteUserBtn.addEventListener("click", async () => {
-        const name = deleteUserInput.value.trim();
+        const name = (deleteUserInput.value || "").trim();
         deleteUserStatus.textContent = "";
 
         if (!name) {
@@ -751,9 +1116,9 @@
 
           let deletedCount = 0;
 
-          for (const userDoc of snap.docs) {
-            const uid = userDoc.id;
-            await deleteDoc(userDoc.ref);
+          for (const docSnap of snap.docs) {
+            const uid = docSnap.id;
+            await deleteDoc(docSnap.ref);
 
             const gpRef = doc(db, "gamePlayers", uid);
             await deleteDoc(gpRef).catch(() => {});
@@ -770,58 +1135,30 @@
       });
     }
 
-    // Онлайн гравці (по колекції gamePlayers)
+    // -------- Онлайн-статус з gamePlayers --------
     const gamePlayersCol = collection(db, "gamePlayers");
-    const MAX_INACTIVE_MS = 30000; // 30 секунд
-
-    if (onlineSummary && onlineListEl) {
-      onSnapshot(
-        gamePlayersCol,
-        (snapshot) => {
-          const now = Date.now();
-          const players = [];
-
-          snapshot.forEach((docSnap) => {
-            const data = docSnap.data() || {};
-            const name = data.name || "Гравець";
-            const updatedAt = data.updatedAt && data.updatedAt.toDate
-              ? data.updatedAt.toDate().getTime()
-              : 0;
-            const online = updatedAt && (now - updatedAt) < MAX_INACTIVE_MS;
-            players.push({ name, online });
-          });
-
-          if (players.length === 0) {
-            onlineSummary.textContent = "Ніхто зараз не у грі.";
-            onlineListEl.innerHTML = "";
-            return;
+    onSnapshot(
+      gamePlayersCol,
+      (snapshot) => {
+        const now = Date.now();
+        const nextMap = new Map();
+        snapshot.forEach(docSnap => {
+          const data = docSnap.data() || {};
+          let updated = 0;
+          if (data.updatedAt && data.updatedAt.toDate) {
+            updated = data.updatedAt.toDate().getTime();
           }
-
-          const onlineCount = players.filter(p => p.online).length;
-          onlineSummary.textContent =
-            "Онлайн у грі зараз: " + onlineCount + " із " + players.length;
-
-          players.sort((a, b) => a.name.localeCompare(b.name));
-          onlineListEl.innerHTML = "";
-
-          for (const p of players) {
-            const li = document.createElement("li");
-            const dot = document.createElement("span");
-            dot.className = "online-dot";
-            dot.style.backgroundColor = p.online ? "#2ecc71" : "#95a5a6";
-            li.appendChild(dot);
-            li.appendChild(document.createTextNode(
-              p.name + (p.online ? " — у грі" : " — офлайн")
-            ));
-            onlineListEl.appendChild(li);
-          }
-        },
-        (err) => {
-          console.error(err);
-          onlineSummary.textContent = "Не вдалося завантажити статус гравців.";
-        }
-      );
-    }
+          const online = updated && (now - updated) < MAX_INACTIVE_MS;
+          nextMap.set(docSnap.id, { online });
+        });
+        onlineMap = nextMap;
+        renderFriends();
+        renderSearchResults();
+      },
+      (err) => {
+        console.error("Помилка читання gamePlayers:", err);
+      }
+    );
   </script>
 </body>
 </html>
